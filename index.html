@@ -161,6 +161,18 @@ h2.sec-title{font-family:var(--display);font-weight:400;font-size:clamp(26px,4vw
 .op.op-expand[open]>summary .xp-hint{color:var(--pesak)}
 .op.op-expand[open]>summary .xp-hint::after{content:" ▾"}
 .op.op-expand>.txt{padding:0 18px 15px}
+/* prev/next section pager */
+.pager{display:flex;justify-content:space-between;gap:12px;margin:28px 0 6px}
+.pg-cell{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:11px;background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;cursor:pointer;font-family:var(--ui);transition:background .12s,border-color .12s}
+.pg-cell:hover{background:#efe9dc;border-color:var(--gilt)}
+.pg-empty{visibility:hidden;cursor:default;pointer-events:none}
+.pg-next{justify-content:flex-end}
+.pg-arrow{color:var(--gilt);font-size:19px;font-weight:700;line-height:1;flex:none}
+.pg-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pg-next .pg-t{text-align:end}
+.pg-role{font-size:11px;color:var(--ink-faint);font-weight:600}
+.pg-name{font-size:15px;color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pg-seif{color:var(--gilt)}
 .pesak{background:linear-gradient(180deg,#fbf4ee,#f7ece4);border:1px solid #e6cdbf;
   border-right:5px solid var(--pesak);border-radius:11px;padding:15px 20px;margin:16px 0 6px}
 .pesak .plbl{font-family:var(--ui);font-size:12.5px;font-weight:700;color:var(--pesak);letter-spacing:.05em;
@@ -317,7 +329,7 @@ const LAY={pasuk:"פסוק",mishna:"משנה / תנאים",gemara:"גמרא",ris
 // abbreviation -> full name (hover reveals it; no visual marker)
 const ABBR={"מ״ב":"משנה ברורה","מג״א":"מגן אברהם","רא״ש":"רבנו אשר (הרא״ש)","רמב״ם":"רבנו משה בן מימון","רמב״ן":"רבנו משה בן נחמן","רשב״א":"רבנו שלמה בן אדרת","רשב״ם":"רבנו שמואל בן מאיר","שו״ע":"שולחן ערוך","רמ״א":"רבי משה איסרליש","ט״ז":"טורי זהב","ש״ך":"שפתי כהן","פמ״ג":"פרי מגדים","פר״ח":"פרי חדש","א״ר":"אליה רבה","בה״ל":"ביאור הלכה","ר״ן":"רבנו נסים","ר״ח":"רבנו חננאל","ר״ת":"רבנו תם","רי״ף":"רבנו יצחק אלפסי","בה״ג":"בעל הלכות גדולות","רע״א":"רבי עקיבא איגר","ערוה״ש":"ערוך השולחן","סמ״ג":"ספר מצוות גדול","סמ״ק":"ספר מצוות קטן","תרוה״ד":"תרומת הדשן","של״ה":"שני לוחות הברית","ת״ק":"תנא קמא","תשב״ץ":"תשב״ץ (שמעון בן צמח)","ראבי״ה":"רבי אליעזר בן יואל הלוי","דרכ״מ":"דרכי משה","רש״י":"רבי שלמה יצחקי","ר״י":"רבנו יצחק (מבעלי התוס׳)","רא״מ":"רבנו אליהו מזרחי","מהרש״ל":"מהר״ש לוריא","אג״מ":"אגרות משה","שש״כ":"שמירת שבת כהלכתה","ב״ח":"בית חדש","מהריט״ץ":"מהר״י טאיטאצאק","ילקו״י":"ילקוט יוסף","ש״ע":"שולחן ערוך","או״ז":"אור זרוע","או״ח":"אורח חיים","אשיר״י":"הגהות אשיר״י","הגש״ד":"הגהות שערי דורא","ריב״ש":"רבי יצחק בר ששת","רדב״ז":"רבי דוד בן זמרא","רמ״ה":"רבי מאיר הלוי אבולעפיה","רשב״ג":"רבן שמעון בן גמליאל","רש״ש":"רבי שמואל שטראשון","שג״ר":"הרב שג״ר (שמעון גרשון רוזנברג)","שעה״צ":"שער הציון","שעה״ת":"שערי תשובה","רי״ו":"רבנו ירוחם","ריטב״א":"רבי יום טוב אבן אשבילי","נמוק״י":"נימוקי יוסף","מרהש״ל":"מהר״ש לוריא","נ״ט":"נותן טעם","נטל״פ":"נותן טעם לפגם","ידס״ב":"יד סולדת בו","מצור״ל":"מצטמק ורע לו","מצוי״ל":"מצטמק ויפה לו","מאב״ד":"מאכל בן דרוסאי","משאצ״ל":"מלאכה שאינה צריכה לגופה","כ״צ":"כל צרכו","בא״ב":"בישול אחר בישול","סכו״ם":"סכין, כף ומזלג","פ״ר":"פסיק רישא","נפק״מ":"נפקא מינה","קיי״ל":"קיימא לן","לכו״ע":"לכולי עלמא","ק״ש":"קריאת שמע","ברהמ״ז":"ברכת המזון","מוצ״ש":"מוצאי שבת","ער״ש":"ערב שבת","רה״ר":"רשות הרבים","כה״ג":"כהאי גוונא","הו״א":"הוה אמינא","דנ״ל":"דניחא ליה","מלשצ״ג":"מלאכה שאינה צריכה לגופה","א״ח":"אורחות חיים","או״ה":"איסור והיתר הארוך","רע״י":"הרב עובדיה יוסף","מהרמ״מ":"מהר״ם מרוטנבורג","משנ״ב":"משנה ברורה","טוש״ע":"טור ושולחן ערוך","פת״ש":"פתחי תשובה","מחצה״ש":"מחצית השקל","ש״ד":"שערי דורא","תה״ד":"תרומת הדשן","נימוק״י":"נימוקי יוסף","גרש״ז":"הגאון רבי שלמה זלמן אוירבך","כלי״ר":"כלי ראשון","בינה״ש":"בין השמשות","ביהכ״נ":"בית הכנסת","ביהמ״ד":"בית המדרש","נו״כ":"נושאי כלים","אח״כ":"אחר כך","לאחמ״כ":"לאחר מכן","אעפ״י":"אף על פי","אע״ג":"אף על גב","א״כ":"אם כן","י״ל":"יש לומר","כנ״ל":"כנזכר לעיל","נ״ל":"נראה לי","הנ״ל":"הנזכר לעיל","ע״י":"על ידי","ע״מ":"על מנת","עפ״י":"על פי","ק״ו":"קל וחומר","בד״א":"במה דברים אמורים","בד״כ":"בדרך כלל","בע״ה":"בעזרת השם","הקב״ה":"הקדוש ברוך הוא","חז״ל":"חכמינו זכרונם לברכה","ע״ה":"עליו השלום","שו״ת":"שאלות ותשובות","זא״ז":"זה את זה","א״א":"אי אפשר","ש״ץ":"שליח ציבור","ב״ש":"בית שמאי","ב״ה":"בית הלל","כ״פ":"כן פסק","כו״פ":"כרתי ופלתי","ריב״ן":"רבי יהודה בן נתן"};
 
-let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID={}, SECLIST="", CUR=null;
+let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID={}, SECLIST="", SECORDER=[], CUR=null;
 function deriveTopic(D){
   CUR=D; GLOSS=D.glossary||{};
   SECTIONS={};
@@ -333,6 +345,9 @@ function deriveTopic(D){
   }
   INTRO={lead:{t:D.topic.intro.lead.t,url:_full(D.topic.intro.lead.ref)},body:D.topic.intro.body};
   NAV=D.nav;
+  SECORDER=[];                                   // linear section order for prev/next paging
+  NAV.forEach(n=>{ if(n.type==='sec'&&n.id)SECORDER.push(n.id);
+    else if(n.type==='group'&&n.children)n.children.forEach(c=>SECORDER.push(c)); });
   SEIF2ID={}; const sl=[];
   for(const _id in SECTIONS){const s=SECTIONS[_id];
     if(s.seif){const m=(s.seif.match(/[א-ת]/g)||[]); if(m.length){SEIF2ID[m.join('')]=_id; if(m.length===1)SEIF2ID[m[0]]=_id;}}
@@ -437,6 +452,19 @@ function introBodyHTML(){
   const paras=String(INTRO.body).split(/\n[ \t]*\n/).map(p=>'<p class="ib-p">'+rich(p)+'</p>').join('');
   return '<div class="intro-body">'+(L?'<p class="intro-lead-line">'+L+'</p>':'')+paras+'</div>';
 }
+function pagerHTML(id){
+  const i=SECORDER.indexOf(id); if(i<0) return '';
+  const prev=i>0?SECORDER[i-1]:null, next=i<SECORDER.length-1?SECORDER[i+1]:null;
+  if(!prev&&!next) return '';
+  const cell=(sid,role,cls)=>{ if(!sid) return '<span class="pg-cell pg-empty"></span>';
+    const s=SECTIONS[sid], seif=(s.seif||'').replace('סעיפים ','').replace('סעיף ','');
+    const label='<span class="pg-t"><span class="pg-role">'+role+'</span><span class="pg-name">'+esc(s.title)+(seif?' <span class="pg-seif">'+seif+'</span>':'')+'</span></span>';
+    const arrow='<span class="pg-arrow">'+(cls==='pg-prev'?'→':'←')+'</span>';
+    return '<button class="pg-cell '+cls+'" data-goto="'+sid+'">'+(cls==='pg-prev'?arrow+label:label+arrow)+'</button>';
+  };
+  return '<nav class="pager">'+cell(prev,'הסעיף הקודם','pg-prev')+cell(next,'הסעיף הבא','pg-next')+'</nav>';
+}
+
 function sectionHTML(id){
   const s=SECTIONS[id];
   let h='<details class="intro-strip"><summary>מבוא לנושא</summary>'+introBodyHTML()+'</details>';
@@ -460,7 +488,7 @@ function showIntro(){
 }
 function showSection(id){
   setActive(id);
-  main.innerHTML=sectionHTML(id)+askHTML();
+  main.innerHTML=sectionHTML(id)+pagerHTML(id)+askHTML();
   wireAsk(); main.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -552,6 +580,8 @@ async function openSrc(ref,url,el){
 }
 // delegated clicks
 document.addEventListener('click',e=>{
+  const pgb=e.target.closest('.pg-cell[data-goto]');
+  if(pgb){showSection(pgb.dataset.goto);e.stopPropagation();return;}
   const term=e.target.closest('.term');
   const sl=e.target.closest('.srclink');
   const sr=e.target.closest('.secref');
@@ -726,7 +756,7 @@ function showHome(){
     return '<a class="topic-card" data-topic="'+t.id+'"><div class="tc-eyebrow">'+esc(eb)+'</div>'+
       '<div class="tc-title">'+esc(t.topic.title)+'</div><div class="tc-meta">'+n+' יחידות</div></a>';};
   main.innerHTML='<div class="subjects">'+groups.map(g=>
-    '<div class="subject-group">'+
+    '<div class="subject-group collapsed">'+
       '<button class="subject-head"><span class="sh-caret">▾</span><span class="sh-title">'+esc(g.subject)+'</span><span class="sh-count">'+g.topics.length+' נושאים</span></button>'+
       '<div class="subject-topics">'+g.topics.map(card).join('')+'</div>'+
     '</div>').join('')+'</div>';
