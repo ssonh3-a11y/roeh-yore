@@ -186,6 +186,51 @@ h2.sec-title{font-family:var(--display);font-weight:400;font-size:clamp(26px,4vw
 .pg-role{font-size:11px;color:var(--ink-faint);font-weight:600}
 .pg-name{font-size:15px;color:var(--ink);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pg-seif{color:var(--gilt)}
+/* sticky topic bar — jump between topics in the same subject */
+.topicbar{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);
+  padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--ui);
+  box-shadow:0 2px 10px rgba(60,50,30,.06)}
+.tb-subj{font-size:12px;font-weight:700;color:var(--gilt);white-space:nowrap;letter-spacing:.02em}
+.tb-topic{display:flex;align-items:center;gap:5px;flex:1;min-width:0}
+.tb-dd{position:relative;flex:1;min-width:0}
+.tb-dd-btn{width:100%;display:flex;align-items:center;gap:8px;justify-content:center;font-family:var(--ui);
+  background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;cursor:pointer}
+.tb-dd-btn:hover{border-color:var(--gilt)}
+.tb-sim{color:var(--gilt);font-weight:700;font-size:13px;white-space:nowrap}
+.tb-ttl{color:var(--ink);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tb-dd-caret{margin-inline-start:auto;color:var(--ink-soft);font-size:11px;transition:transform .15s}
+.tb-dd-btn.open .tb-dd-caret{transform:rotate(180deg)}
+.tb-dd-panel{position:absolute;top:calc(100% + 5px);inset-inline:0;z-index:60;background:var(--card);
+  border:1px solid var(--line);border-radius:11px;box-shadow:0 8px 26px rgba(60,50,30,.17);
+  max-height:60vh;overflow:auto;padding:5px}
+.tb-dd-panel[hidden]{display:none}
+.tb-dd-item{width:100%;display:flex;align-items:baseline;gap:8px;background:transparent;border:0;cursor:pointer;
+  font-family:var(--ui);text-align:start;padding:9px 11px;border-radius:8px}
+.tb-dd-item:hover{background:var(--card-2)}
+.tb-dd-item.cur{background:#f3ecdb}
+.tb-dd-item .tb-ttl{font-weight:600;font-size:14.5px}
+.tb-arrow{flex:none;width:36px;height:36px;border:1px solid var(--line);border-radius:9px;background:var(--card-2);
+  color:var(--gilt);font-size:19px;font-weight:700;cursor:pointer;line-height:1}
+.tb-arrow:disabled{opacity:.3;cursor:default}
+.tb-arrow:not(:disabled):hover{background:#efe9dc;border-color:var(--gilt)}
+.tb-sec{display:none;align-items:center;gap:6px;width:100%;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.tbs-cell{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:transparent;border:0;cursor:pointer;
+  font-family:var(--ui);font-size:13px;color:var(--ink-soft);padding:2px 4px}
+.tbs-next{justify-content:flex-end;text-align:end}
+.tbs-arrow{color:var(--gilt);font-weight:700;font-size:16px;flex:none}
+.tbs-name{font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbs-empty{visibility:hidden;pointer-events:none}
+.tb-collapse{flex:none;width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:var(--card-2);
+  color:var(--ink-soft);cursor:pointer;font-size:12px;line-height:1;font-weight:700}
+.tb-collapse:hover{background:#efe9dc;color:var(--ink)}
+.tb-mini{display:none;font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topicbar.tb-collapsed{padding:4px 14px}
+.topicbar.tb-collapsed .tb-topic,.topicbar.tb-collapsed .tb-sec{display:none}
+.topicbar.tb-collapsed .tb-subj{font-size:11px;opacity:.85}
+.topicbar.tb-collapsed .tb-mini{display:inline}
+body.nav-B .tb-sec{display:flex}
+body.nav-B .topicbar.tb-collapsed .tb-sec{display:none}
+body.nav-B .pager{display:none}
 .pesak{background:linear-gradient(180deg,#fbf4ee,#f7ece4);border:1px solid #e6cdbf;
   border-right:5px solid var(--pesak);border-radius:11px;padding:15px 20px;margin:16px 0 6px}
 .pesak .plbl{font-family:var(--ui);font-size:12.5px;font-weight:700;color:var(--pesak);letter-spacing:.05em;
@@ -314,6 +359,7 @@ footer{border-top:1px solid var(--rule);font-family:var(--ui);font-size:12.5px;c
   <h1 class="topic" id="htitle"></h1>
   <p class="subtitle">סיכום אינטראקטיבי · לחיצה על מקור פותחת אותו בבועה · שאלו את הסיכום בתחתית העמוד</p>
 </div></header>
+<div id="topicbar" class="topicbar" style="display:none"></div>
 
 <div class="wrap"><div class="grid">
   <nav class="rail"><div class="rail-title">ניווט</div><div id="tree"></div></nav>
@@ -342,7 +388,7 @@ const LAY={pasuk:"פסוק",mishna:"משנה / תנאים",gemara:"גמרא",ris
 // abbreviation -> full name (hover reveals it; no visual marker)
 const ABBR={"מ״ב":"משנה ברורה","מג״א":"מגן אברהם","רא״ש":"רבנו אשר (הרא״ש)","רמב״ם":"רבנו משה בן מימון","רמב״ן":"רבנו משה בן נחמן","רשב״א":"רבנו שלמה בן אדרת","רשב״ם":"רבנו שמואל בן מאיר","שו״ע":"שולחן ערוך","רמ״א":"רבי משה איסרליש","ט״ז":"טורי זהב","ש״ך":"שפתי כהן","פמ״ג":"פרי מגדים","פר״ח":"פרי חדש","א״ר":"אליה רבה","בה״ל":"ביאור הלכה","ר״ן":"רבנו נסים","ר״ח":"רבנו חננאל","ר״ת":"רבנו תם","רי״ף":"רבנו יצחק אלפסי","בה״ג":"בעל הלכות גדולות","רע״א":"רבי עקיבא איגר","ערוה״ש":"ערוך השולחן","סמ״ג":"ספר מצוות גדול","סמ״ק":"ספר מצוות קטן","תרוה״ד":"תרומת הדשן","של״ה":"שני לוחות הברית","ת״ק":"תנא קמא","תשב״ץ":"תשב״ץ (שמעון בן צמח)","ראבי״ה":"רבי אליעזר בן יואל הלוי","דרכ״מ":"דרכי משה","רש״י":"רבי שלמה יצחקי","ר״י":"רבנו יצחק (מבעלי התוס׳)","רא״מ":"רבנו אליהו מזרחי","מהרש״ל":"מהר״ש לוריא","אג״מ":"אגרות משה","שש״כ":"שמירת שבת כהלכתה","ב״ח":"בית חדש","מהריט״ץ":"מהר״י טאיטאצאק","ילקו״י":"ילקוט יוסף","ש״ע":"שולחן ערוך","או״ז":"אור זרוע","או״ח":"אורח חיים","אשיר״י":"הגהות אשיר״י","הגש״ד":"הגהות שערי דורא","ריב״ש":"רבי יצחק בר ששת","רדב״ז":"רבי דוד בן זמרא","רמ״ה":"רבי מאיר הלוי אבולעפיה","רשב״ג":"רבן שמעון בן גמליאל","רש״ש":"רבי שמואל שטראשון","שג״ר":"הרב שג״ר (שמעון גרשון רוזנברג)","שעה״צ":"שער הציון","שעה״ת":"שערי תשובה","רי״ו":"רבנו ירוחם","ריטב״א":"רבי יום טוב אבן אשבילי","נמוק״י":"נימוקי יוסף","מרהש״ל":"מהר״ש לוריא","נ״ט":"נותן טעם","נטל״פ":"נותן טעם לפגם","ידס״ב":"יד סולדת בו","מצור״ל":"מצטמק ורע לו","מצוי״ל":"מצטמק ויפה לו","מאב״ד":"מאכל בן דרוסאי","משאצ״ל":"מלאכה שאינה צריכה לגופה","כ״צ":"כל צרכו","בא״ב":"בישול אחר בישול","סכו״ם":"סכין, כף ומזלג","פ״ר":"פסיק רישא","נפק״מ":"נפקא מינה","קיי״ל":"קיימא לן","לכו״ע":"לכולי עלמא","ק״ש":"קריאת שמע","ברהמ״ז":"ברכת המזון","מוצ״ש":"מוצאי שבת","ער״ש":"ערב שבת","רה״ר":"רשות הרבים","כה״ג":"כהאי גוונא","הו״א":"הוה אמינא","דנ״ל":"דניחא ליה","מלשצ״ג":"מלאכה שאינה צריכה לגופה","א״ח":"אורחות חיים","או״ה":"איסור והיתר הארוך","רע״י":"הרב עובדיה יוסף","מהרמ״מ":"מהר״ם מרוטנבורג","משנ״ב":"משנה ברורה","טוש״ע":"טור ושולחן ערוך","פת״ש":"פתחי תשובה","מחצה״ש":"מחצית השקל","ש״ד":"שערי דורא","תה״ד":"תרומת הדשן","נימוק״י":"נימוקי יוסף","גרש״ז":"הגאון רבי שלמה זלמן אוירבך","כלי״ר":"כלי ראשון","בינה״ש":"בין השמשות","ביהכ״נ":"בית הכנסת","ביהמ״ד":"בית המדרש","נו״כ":"נושאי כלים","אח״כ":"אחר כך","לאחמ״כ":"לאחר מכן","אעפ״י":"אף על פי","אע״ג":"אף על גב","א״כ":"אם כן","י״ל":"יש לומר","כנ״ל":"כנזכר לעיל","נ״ל":"נראה לי","הנ״ל":"הנזכר לעיל","ע״י":"על ידי","ע״מ":"על מנת","עפ״י":"על פי","ק״ו":"קל וחומר","בד״א":"במה דברים אמורים","בד״כ":"בדרך כלל","בע״ה":"בעזרת השם","הקב״ה":"הקדוש ברוך הוא","חז״ל":"חכמינו זכרונם לברכה","ע״ה":"עליו השלום","שו״ת":"שאלות ותשובות","זא״ז":"זה את זה","א״א":"אי אפשר","ש״ץ":"שליח ציבור","ב״ש":"בית שמאי","ב״ה":"בית הלל","כ״פ":"כן פסק","כו״פ":"כרתי ופלתי","ריב״ן":"רבי יהודה בן נתן"};
 
-let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID={}, SECLIST="", SECORDER=[], CUR=null;
+let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID={}, SECLIST="", SECORDER=[], CUR=null, TBCOLLAPSED=false;
 /* === כתובת שרת ה-AI (Gemini דרך Vercel). אם האתר על גיטהאב וה-API על Vercel — הכניסו כאן את כתובת ה-Vercel שלכם,
    למשל: const API_BASE = "https://roeh-yore-ai.vercel.app";  אם הכל על Vercel — השאירו ריק. === */
 const API_BASE = "https://roeh-yore-ai.vercel.app";
@@ -507,7 +553,7 @@ function showIntro(){
 function showSection(id){
   setActive(id);
   main.innerHTML=sectionHTML(id)+pagerHTML(id)+askHTML();
-  wireAsk(); main.scrollIntoView({behavior:'smooth',block:'start'});
+  wireAsk(); updateTopicbarSection(id); main.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ---------- nav tree ----------
@@ -598,6 +644,16 @@ async function openSrc(ref,url,el){
 }
 // delegated clicks
 document.addEventListener('click',e=>{
+  const tbc=e.target.closest('.tb-collapse');
+  if(tbc){TBCOLLAPSED=!TBCOLLAPSED; const bar=document.getElementById('topicbar');
+    if(bar){bar.classList.toggle('tb-collapsed',TBCOLLAPSED); tbc.textContent=TBCOLLAPSED?'▾':'▴';} e.stopPropagation();return;}
+  const ddb=e.target.closest('.tb-dd-btn');
+  if(ddb){const p=document.getElementById('tb-ddpanel'); if(p){p.hidden=!p.hidden; ddb.classList.toggle('open',!p.hidden);} e.stopPropagation();return;}
+  const tta=e.target.closest('[data-gototopic]');
+  if(tta){openTopic(tta.dataset.gototopic);e.stopPropagation();return;}
+  {const p=document.getElementById('tb-ddpanel'); if(p&&!p.hidden&&!e.target.closest('.tb-dd')){p.hidden=true; const bb=document.getElementById('tb-ddbtn'); if(bb)bb.classList.remove('open');}}
+  const tsc=e.target.closest('#tb-sec .tbs-cell[data-goto]');
+  if(tsc){showSection(tsc.dataset.goto);e.stopPropagation();return;}
   const pgb=e.target.closest('.pg-cell[data-goto]');
   if(pgb){showSection(pgb.dataset.goto);e.stopPropagation();return;}
   const term=e.target.closest('.term');
@@ -748,6 +804,46 @@ document.addEventListener('keydown',e=>{
   if(e.code==='Space'&&!FC.flipped){e.preventDefault();FC.flipped=true;renderCard();}
 });
 
+function _simanNum(t){return parseInt((t.topic.siman||'').split('.').pop())||0;}
+function _simanLabel(t){
+  const eb=(t.topic.eyebrow||'').split('·').map(s=>s.trim());
+  let sim=eb.length?eb[eb.length-1]:'';
+  sim=sim.replace(/^סימנים\s+/,'סי׳ ').replace(/^סימן\s+/,'סי׳ ');
+  return sim;
+}
+function buildTopicbar(){
+  const bar=document.getElementById('topicbar'); if(!bar||!CUR) return;
+  const subj=CUR.subject||'כללי';
+  const sibs=SITE.topics.filter(t=>(t.subject||'כללי')===subj).sort((a,b)=>_simanNum(a)-_simanNum(b));
+  const idx=sibs.findIndex(t=>t.id===CUR.id);
+  const prev=idx>0?sibs[idx-1]:null, next=idx<sibs.length-1?sibs[idx+1]:null;
+  const cur=sibs[idx]||CUR;
+  const curLbl='<span class="tb-sim">'+esc(_simanLabel(cur))+'</span><span class="tb-ttl">'+esc(cur.topic.title)+'</span>';
+  const items=sibs.map(t=>'<button class="tb-dd-item'+(t.id===CUR.id?' cur':'')+'" data-gototopic="'+t.id+'">'+
+      '<span class="tb-sim">'+esc(_simanLabel(t))+'</span><span class="tb-ttl">'+esc(t.topic.title)+'</span></button>').join('');
+  bar.innerHTML='<button class="tb-collapse" title="הסתרה/הצגה" aria-label="הסתרה/הצגה">'+(TBCOLLAPSED?'▾':'▴')+'</button>'+
+    '<span class="tb-subj">'+esc(subj)+'</span>'+
+    '<span class="tb-mini">'+esc(cur.topic.title)+'</span>'+
+    '<div class="tb-topic">'+
+      '<button class="tb-arrow tb-tprev" '+(prev?'data-gototopic="'+prev.id+'"':'disabled')+' title="הנושא הקודם">›</button>'+
+      '<div class="tb-dd">'+
+        '<button class="tb-dd-btn" id="tb-ddbtn" aria-haspopup="listbox">'+curLbl+'<span class="tb-dd-caret">▾</span></button>'+
+        '<div class="tb-dd-panel" id="tb-ddpanel" hidden>'+items+'</div>'+
+      '</div>'+
+      '<button class="tb-arrow tb-tnext" '+(next?'data-gototopic="'+next.id+'"':'disabled')+' title="הנושא הבא">‹</button>'+
+    '</div><div class="tb-sec" id="tb-sec"></div>';
+  bar.classList.toggle('tb-collapsed',TBCOLLAPSED);
+  bar.style.display='flex';
+}
+function updateTopicbarSection(id){
+  const host=document.getElementById('tb-sec'); if(!host) return;
+  const i=SECORDER.indexOf(id), prev=i>0?SECORDER[i-1]:null, next=i<SECORDER.length-1?SECORDER[i+1]:null;
+  const cell=(sid,cls,arrow)=>{ if(!sid) return '<span class="tbs-cell tbs-empty"></span>';
+    const s=SECTIONS[sid], seif=(s.seif||'').replace('סעיפים ','').replace('סעיף ','');
+    const lbl='<span class="tbs-name">'+esc(s.title)+(seif?' · '+seif:'')+'</span>', ar='<span class="tbs-arrow">'+arrow+'</span>';
+    return '<button class="tbs-cell '+cls+'" data-goto="'+sid+'">'+(cls==='tbs-prev'?ar+lbl:lbl+ar)+'</button>'; };
+  host.innerHTML=cell(prev,'tbs-prev','›')+cell(next,'tbs-next','‹');
+}
 function openTopic(id){
   const D=SITE.topics.find(t=>t.id===id)||SITE.topics[0];
   deriveTopic(D);
@@ -756,12 +852,13 @@ function openTopic(id){
   document.getElementById('htitle').textContent=D.topic.title;
   document.title=D.topic.title+' · '+(SITE.title||'סיכומי הלכה');
   document.getElementById('home-link').style.display=SITE.topics.length>1?'inline-block':'none';
-  buildNav(); showIntro();
+  buildNav(); showIntro(); buildTopicbar();
 }
 function showHome(){
   document.querySelector('.grid').classList.add('home');
   tree.innerHTML='';
   document.getElementById('home-link').style.display='none';
+  {const _tb=document.getElementById('topicbar'); if(_tb)_tb.style.display='none';}
   document.getElementById('hbrow').textContent=SITE.subtitle||'אוסף אינטראקטיבי';
   document.getElementById('htitle').textContent=SITE.title||'סיכומי הלכה';
   document.title=SITE.title||'סיכומי הלכה';
