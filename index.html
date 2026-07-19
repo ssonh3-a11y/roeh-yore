@@ -310,6 +310,9 @@ body.nav-B .pager{display:none}
 .ask .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .ask .chip{background:#2b3a31;border:1px solid #3c4f43;color:#d7e0d6;font-size:13px;padding:6px 12px;border-radius:999px;cursor:pointer}
 .ask .chip:hover{background:#35473b}
+.ask .ask-scope{display:flex;align-items:center;gap:9px;margin:0 0 13px;font-family:var(--ui);font-size:13px;color:#a9b6ac;flex-wrap:wrap}
+.ask .ask-scope select{background:#141b17;border:1px solid #37473d;color:#e8ece6;border-radius:9px;padding:7px 11px;font-family:var(--ui);font-size:13.5px;max-width:100%;cursor:pointer}
+.ask .ask-scope select:focus{outline:none;border-color:#5c7a67}
 .ask .row{display:flex;gap:9px}
 .ask input{flex:1;background:#141b17;border:1px solid #37473d;color:#f2f4ef;border-radius:10px;
   padding:12px 14px;font-family:var(--ui);font-size:15px;direction:rtl}
@@ -780,6 +783,89 @@ document.addEventListener('click',e=>{
 
 // ---------- ask the summary ----------
 // SECLIST is derived per topic in deriveTopic
+var ASK_SCOPE='topic';
+function _askStrip(x){return String(x||'').replace(/\*\*/g,'').replace(/~~/g,'')
+  .replace(/\\ul\{([^}]*)\}/g,'$1').replace(/\\col\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1')
+  .replace(/\\note\{([^}]*)\}/g,'$1').replace(/\\cite\{([^}]*)\}\{[^}]*\}/g,'$1')
+  .replace(/\\ref\{([^}]*)\}\{[^}]*\}/g,'$1');}
+function _askSubjects(){var o=[];SITE.topics.forEach(function(t){var s=t.subject||'\u05db\u05dc\u05dc\u05d9';if(o.indexOf(s)<0)o.push(s);});return o;}
+function _askSecText(sc){var p=[];
+  if(sc.intro)p.push(_askStrip(sc.intro));
+  (sc.flow||[]).forEach(function(b){p.push((b.head?b.head+': ':'')+_askStrip(b.body));});
+  (sc.ops||[]).forEach(function(o){ if(o.subhead){p.push('\u2014 '+o.subhead+' \u2014');return;}
+    if(o.subsubhead){p.push('\u2022 '+o.subsubhead);return;}
+    p.push((o.src?o.src+': ':'')+_askStrip(o.txt));});
+  if(sc.pesak)p.push('\u05d4\u05dc\u05db\u05d4 \u05dc\u05de\u05e2\u05e9\u05d4: '+_askStrip(sc.pesak));
+  return p.join('\n');}
+function _askPool(){var pool=[];
+  SITE.topics.forEach(function(T){
+    if(ASK_SCOPE.indexOf('subj:')===0 && (T.subject||'')!==ASK_SCOPE.slice(5))return;
+    var sim=_simanOnly(T);
+    for(var sid in T.sections){var sc=T.sections[sid];
+      pool.push({tid:T.id,sid:sid,subj:T.subject||'',topic:T.topic.title+(sim?' ('+sim+')':''),
+        head:(sc.seif?sc.seif+' \u00b7 ':'')+sc.title,txt:_askSecText(sc),
+        key:_norm(T.topic.title+' '+sc.title)});}});
+  return pool;}
+function _askPick(q,pool,budget){
+  var terms=_qterms(q).filter(function(w){return w.length>1;});
+  var scored=pool.map(function(r){var hay=_norm(r.key+' '+r.txt),sc=0;
+    terms.forEach(function(t){var vs=[t]; if(t.length>3&&'בהוכלמש'.indexOf(t.charAt(0))>-1)vs.push(t.slice(1));
+      var best=0,inKey=false; vs.forEach(function(v){var c=hay.split(v).length-1; if(c>best)best=c; if(r.key.indexOf(v)>-1)inKey=true;});
+      if(best)sc+=Math.min(best,4); if(inKey)sc+=6;});
+    return {r:r,s:sc};});
+  scored.sort(function(a,b){return b.s-a.s;});
+  var out=[],used=0;
+  for(var i=0;i<scored.length;i++){ if(scored[i].s<=0)break;
+    var t=scored[i].r; if(used+t.txt.length>budget)continue;
+    out.push(t); used+=t.txt.length; if(out.length>=22)break;}
+  if(!out.length)out=pool.slice(0,6);
+  return out;}
+function askScopeDesc(){
+  if(ASK_SCOPE==='topic'&&CUR)return "\u05dc\u05e4\u05e0\u05d9\u05da \u05e1\u05d9\u05db\u05d5\u05dd \u05e2\u05dc '"+CUR.topic.title+"'.";
+  if(ASK_SCOPE.indexOf('subj:')===0)return "\u05dc\u05e4\u05e0\u05d9\u05da \u05e7\u05d8\u05e2\u05d9\u05dd \u05de\u05ea\u05d5\u05da \u05d4\u05e1\u05d9\u05db\u05d5\u05de\u05d9\u05dd \u05d1\u05de\u05e7\u05e6\u05d5\u05e2 '"+ASK_SCOPE.slice(5)+"'.";
+  return '\u05dc\u05e4\u05e0\u05d9\u05da \u05e7\u05d8\u05e2\u05d9\u05dd \u05de\u05ea\u05d5\u05da \u05d4\u05e1\u05d9\u05db\u05d5\u05de\u05d9\u05dd \u05e9\u05d1\u05d0\u05ea\u05e8 (\u05de\u05db\u05de\u05d4 \u05de\u05e7\u05e6\u05d5\u05e2\u05d5\u05ea).';}
+function askContext(q){
+  if(ASK_SCOPE==='topic'&&CUR)return '\u05d4\u05e1\u05e2\u05d9\u05e4\u05d9\u05dd \u05d1\u05e1\u05d9\u05db\u05d5\u05dd: '+SECLIST+'.\n\n=== \u05d4\u05e1\u05d9\u05db\u05d5\u05dd ===\n'+fullText();
+  var picked=_askPick(q,_askPool(),42000),by={},order=[];
+  picked.forEach(function(r){var k=r.subj+'|'+r.topic; if(!by[k]){by[k]=[];order.push(k);} by[k].push(r);});
+  var out='\u05dc\u05d4\u05dc\u05df \u05e7\u05d8\u05e2\u05d9\u05dd \u05e0\u05d1\u05d7\u05e8\u05d9\u05dd \u05de\u05ea\u05d5\u05da \u05d4\u05e1\u05d9\u05db\u05d5\u05de\u05d9\u05dd, \u05dc\u05e4\u05d9 \u05e8\u05dc\u05d5\u05d5\u05e0\u05d8\u05d9\u05d5\u05ea \u05dc\u05e9\u05d0\u05dc\u05d4:\n\n';
+  order.forEach(function(k){var arr=by[k];
+    out+='=== \u05de\u05e7\u05e6\u05d5\u05e2: '+arr[0].subj+' \u00b7 \u05e0\u05d5\u05e9\u05d0: '+arr[0].topic+' ===\n';
+    arr.forEach(function(r){out+='['+r.head+']\n'+r.txt+'\n\n';});});
+  return out;}
+function askScopeHTML(){
+  var subs=_askSubjects(),cur=CUR?(CUR.subject||''):'',o='';
+  if(CUR)o+='<option value="topic">\u05d1\u05e0\u05d5\u05e9\u05d0 \u05d4\u05d6\u05d4: '+esc(CUR.topic.title)+'</option>';
+  if(cur)o+='<option value="subj:'+esc(cur)+'">\u05d1\u05db\u05dc \u05d4\u05de\u05e7\u05e6\u05d5\u05e2: '+esc(cur)+'</option>';
+  subs.forEach(function(x){if(x!==cur)o+='<option value="subj:'+esc(x)+'">\u05d1\u05de\u05e7\u05e6\u05d5\u05e2: '+esc(x)+'</option>';});
+  o+='<option value="all">\u05d1\u05db\u05dc \u05d4\u05d0\u05ea\u05e8 (\u05d6\u05d9\u05d4\u05d5\u05d9 \u05d0\u05d5\u05d8\u05d5\u05de\u05d8\u05d9)</option>';
+  return '<div class="ask-scope"><label for="ask-scope">\u05d4\u05d9\u05e7\u05e3 \u05d4\u05e9\u05d0\u05dc\u05d4:</label><select id="ask-scope">'+o+'</select></div>';}
+var _STOP={'יש':1,'אם':1,'האם':1,'מה':1,'את':1,'של':1,'על':1,'כי':1,'לא':1,'הוא':1,'היא':1,
+ 'זה':1,'זו':1,'כן':1,'גם':1,'או':1,'אבל':1,'כדי':1,'בין':1,'עם':1,'ניתן':1,'כיצד':1,'איך':1,'מתי':1,
+ 'למה':1,'מדוע':1,'אין':1,'רק':1,'כל':1,'עוד':1,'אחד':1,'וכן':1,'צריך':1,'לי':1,'לו':1,'הם':1};
+function _stem(w){return (w.length>3&&'בהוכלמש'.indexOf(w.charAt(0))>-1)?w.slice(1):w;}
+function _qterms(q){return _norm(q).split(' ').filter(function(w){return w.length>1&&!_STOP[w];});}
+function _near(a,b){return a.length>=4&&b.length>=4&&(a.indexOf(b)===0||b.indexOf(a)===0)&&Math.abs(a.length-b.length)<=2;}
+function _wordHit(words,t){var ts=_stem(t),n=0;
+  for(var i=0;i<words.length;i++){var w=words[i],ws=_stem(w);
+    if(w===t||ws===ts||w===ts||ws===t){n+=2;continue;}
+    if(_near(w,t)||_near(ws,ts)||_near(ws,t)||_near(w,ts))n+=1;}
+  return n;}
+function _hasTerm(hay,t){return _wordHit(String(hay).split(' '),t)>0;}
+function _askPick(q,pool,budget){
+  var terms=_qterms(q); if(!terms.length)return [];
+  var scored=pool.map(function(r){var kw=String(r.key).split(' '),tw=_norm(r.txt).split(' '),sc=0;
+    terms.forEach(function(t){var a=_wordHit(tw,t),b=_wordHit(kw,t);
+      if(a)sc+=Math.min(a,4); if(b)sc+=Math.min(b*3,6);});
+    return {r:r,s:sc};});
+  scored.sort(function(a,b){return b.s-a.s;});
+  var top=scored.length?scored[0].s:0;
+  if(top<3)return [];
+  var thresh=Math.max(3,Math.round(top*0.3)), out=[], used=0;
+  for(var i=0;i<scored.length;i++){ if(scored[i].s<thresh)break;
+    var t=scored[i].r; if(used+t.txt.length>budget)continue;
+    out.push(t); used+=t.txt.length; if(out.length>=18)break;}
+  return out;}
 function askHTML(){
   return '<div class="ask"><h3>שאלו את הסיכום</h3>'+
     '<p class="hint">המענה מבוסס על הסיכום, בסגנון תשובת מבחן — פורש את השיטות, מציין מקורות, ומפנה לסעיפים (לחיצים). אינו פסק הלכה למעשה.</p>'+
@@ -788,7 +874,8 @@ function askHTML(){
       '<span class="chip">מה נחלקו בו הראשונים?</span>'+
       '<span class="chip">מה ההלכה למעשה?</span>'+
     '</div>'+
-    '<div class="row"><input id="q" placeholder="'+('כתבו שאלה על '+esc(CUR.topic.title)+'…')+'"><button class="send" id="ask-btn">שאל</button></div>'+
+    askScopeHTML()+
+    '<div class="row"><input id="q" placeholder="'+((ASK_SCOPE==='topic'&&CUR)?('כתבו שאלה על '+esc(CUR.topic.title)+'…'):'כתבו שאלה הלכתית…')+'"><button class="send" id="ask-btn">שאל</button></div>'+
     '<div class="answer" id="ans"></div></div>';
 }
 function fullText(){
@@ -811,17 +898,21 @@ function wireAsk(){
   const btn=document.getElementById('ask-btn'),q=document.getElementById('q'),ans=document.getElementById('ans');
   if(!btn)return;
   main.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{q.value=c.textContent;go();});
+  var _ss=document.getElementById('ask-scope');
+  if(_ss){_ss.value=ASK_SCOPE;_ss.onchange=function(){ASK_SCOPE=_ss.value;
+    q.placeholder=(ASK_SCOPE==='topic'&&CUR)?('כתבו שאלה על '+CUR.topic.title+'…'):'כתבו שאלה הלכתית…';};}
   btn.onclick=go; q.onkeydown=e=>{if(e.key==='Enter')go();};
   async function go(){
     const question=q.value.trim(); if(!question)return;
     btn.disabled=true; ans.classList.add('on'); ans.innerHTML='חושב<span class="spin"></span>';
-    const sys="אתה עוזר לימוד לקראת מבחני ההלכה של הרבנות הראשית. לפניך סיכום על '"+CUR.topic.title+"'. ענה על סמך הסיכום, אך פעל כמומחה שמבין את החומר:\n"+
+    const sys="אתה עוזר לימוד לקראת מבחני ההלכה של הרבנות הראשית. "+askScopeDesc()+" ענה על סמך החומר שלפניך, אך פעל כמומחה שמבין את החומר:\n"+
       "1. אם השאלה נוגעת לעיקרון או מקרה שנידון בסיכום — אף בניסוח שונה — יישם אותו והפנה לסעיף הרלוונטי.\n"+
       "2. הצג בקצרה את מהלך הדיון: השיטות (משנה, גמרא, ראשונים, שו״ע, רמ״א, אחרונים, פוסקי זמננו) ושמות בעליהן, בסגנון תשובת מבחן.\n"+
       "3. הפנה לסעיפים הרלוונטיים בכתיב מדויק כמו 'סעיף ה׳', כדי שהלומד יוכל לעבור אליהם.\n"+
       "4. אל תפסוק הלכה למעשה לשואל; הצג את הדיון והשיקולים. במקרים של סכנה/רפואה סייג שהדבר תלוי בהערכה רפואית ובשאלת רב.\n"+
       "5. רק אם אין בסיכום שום עיגון רלוונטי — אמור 'לא מופיע בסיכום'.\n"+
-      "כתוב בעברית ברורה ותמציתית.\n\nהסעיפים בסיכום: "+SECLIST+".\n\n=== הסיכום ===\n"+fullText();
+      "6. אם המענה מחייב שילוב של כמה נושאים — עשה זאת במפורש, וציין מאיזה נושא (וסימן) כל מרכיב.\n"+
+      "כתוב בעברית ברורה ותמציתית.\n\n"+askContext(question);
     try{
       const r=await fetch(API_BASE+"/api/ask",{method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -1017,7 +1108,7 @@ function runSearch(q){
 }
 function openTopic(id,gotoSec){
   const D=SITE.topics.find(t=>t.id===id)||SITE.topics[0];
-  deriveTopic(D);
+  deriveTopic(D); ASK_SCOPE='topic';
   document.querySelector('.grid').classList.remove('home');
   var _ch=_chelek(D),_sm=_simanOnly(D),_sj=D.subject||'';
   document.getElementById('hbrow').innerHTML=(_ch?esc(_ch)+' · ':'')+(_sj?'<span class="subj-link" data-homesubject="'+esc(_sj)+'">'+esc(_sj)+'</span>':'');
@@ -1061,6 +1152,8 @@ function showHome(openSubject){
   main.querySelectorAll('.topic-card').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic));
   main.querySelectorAll('.rec-chip').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic));
   main.querySelectorAll('.subject-head').forEach(b=>b.onclick=()=>b.closest('.subject-group').classList.toggle('collapsed'));
+  ASK_SCOPE='all';
+  var _askBox=document.createElement('div'); _askBox.innerHTML=askHTML(); main.appendChild(_askBox); wireAsk();
   if(openSubject){var _og=Array.prototype.slice.call(main.querySelectorAll('.subject-group')).filter(function(x){var t=x.querySelector('.sh-title');return t&&t.textContent===openSubject;})[0];
     if(_og)_og.scrollIntoView({behavior:'smooth',block:'start'});}
 }
