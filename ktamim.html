@@ -1702,20 +1702,20 @@ function showHome(openSubject){
   const card=t=>{const n=t.secCount||Object.keys(t.sections).length; const eb=(t.topic.eyebrow||'').split('·').slice(-1)[0].trim();
     const rec=t.recommendedOrder?' rec':'';
     const badge=t.recommendedOrder?'<span class="rec-badge">'+t.recommendedOrder+'</span>':'';
-    return '<a class="topic-card'+rec+'" data-topic="'+t.id+'">'+badge+'<div class="tc-eyebrow">'+esc(eb)+'</div>'+
+    return '<a class="topic-card'+rec+'" href="'+t.id+'.html" data-topic="'+t.id+'">'+badge+'<div class="tc-eyebrow">'+esc(eb)+'</div>'+
       '<div class="tc-title">'+esc(t.topic.title)+'</div><div class="tc-meta">'+n+' יחידות</div></a>';};
   const recStrip=g=>{const recs=g.topics.filter(t=>t.recommendedOrder).sort((a,b)=>a.recommendedOrder-b.recommendedOrder);
     if(!recs.length) return '';
     return '<div class="rec-strip"><span class="rec-lbl">◆ סדר לימוד מומלץ</span><span class="rec-seq">'+
-      recs.map(t=>'<a class="rec-chip" data-topic="'+t.id+'">'+esc(t.topic.title)+'</a>').join('<span class="rec-arrow" dir="ltr">&#8592;</span>')+
+      recs.map(t=>'<a class="rec-chip" href="'+t.id+'.html" data-topic="'+t.id+'">'+esc(t.topic.title)+'</a>').join('<span class="rec-arrow" dir="ltr">&#8592;</span>')+
       '</span></div>';};
   main.innerHTML=HOMEHERO+'<div class="subjects">'+groups.map(g=>
     '<div class="subject-group'+((openSubject&&g.subject===openSubject)?'':' collapsed')+'">'+
       '<button class="subject-head"><span class="sh-caret">▾</span><span class="sh-title">'+esc(g.subject)+'</span><span class="sh-count">'+g.topics.length+' נושאים</span></button>'+
       '<div class="subject-topics">'+recStrip(g)+g.topics.map(card).join('')+'</div>'+
     '</div>').join('')+'</div>';
-  main.querySelectorAll('.topic-card').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic));
-  main.querySelectorAll('.rec-chip').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic));
+  main.querySelectorAll('.topic-card').forEach(c=>c.onclick=function(ev){ev.preventDefault();openTopic(c.dataset.topic);});
+  main.querySelectorAll('.rec-chip').forEach(c=>c.onclick=function(ev){ev.preventDefault();openTopic(c.dataset.topic);});
   main.querySelectorAll('.subject-head').forEach(b=>b.onclick=()=>b.closest('.subject-group').classList.toggle('collapsed'));
   ASK_SCOPE='all';
   var _askBox=document.createElement('div'); _askBox.innerHTML=askHTML(); main.appendChild(_askBox); wireAsk();
