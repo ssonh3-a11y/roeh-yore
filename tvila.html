@@ -15,7 +15,7 @@
 <meta property="og:description" content="סיכום הטבילה וההכנות לה, יורה דעה סימן קצז-ר — הכנה למבחני הרבנות בנידה. טבילה ביום, שלא להתעכב בטבילה (טבילה בזמנה), טבילה בשבת ומוצ&quot;ש, חובת הטבילה וכוונה, מתי מברכים על טבילה">
 <meta property="og:url" content="https://roeh-yoreh.co.il/tvila.html">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="רואֶה יורֶה">
+<meta property="og:site_name" content="רואה יורה">
 <meta property="og:image" content="https://roeh-yoreh.co.il/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -1451,7 +1451,7 @@ function sectionHTML(id){
      '<h2 class="sec-title">'+esc(s.title)+tailHTML(s)+'</h2></div>';
   if(s.intro) h+='<div class="'+(s.flowtext?'sec-flow':'sec-lead')+'">'+richB(s.intro)+'</div>';
   if(s.flow) h+=flowHTML(s.flow);
-  if(s.summary) h+='<div class="summary-card"><div class="sum-lbl">◆ תקציר · התפתחות ההלכה</div><div class="sum-txt">'+richB(s.summary)+'</div></div>';
+  if(s.summary) h+='<div class="summary-card"><div class="sum-lbl">◆ תקציר</div><div class="sum-txt">'+richB(s.summary)+'</div></div>';
   if(s.sugya) h+='<div class="sugya"><span class="pin">◆ סוגיה</span> '+srclink(s.sugya.label,s.sugya.url)+'</div>';
   h+=s.ops.map(opHTML).join('');
   if(s.pesak) h+='<div class="pesak"><div class="plbl"><span class="dia">◆</span> הלכה למעשה</div><div class="txt">'+rich(s.pesak)+'</div></div>';
@@ -1523,7 +1523,7 @@ function refreshChildHeights(){tree.querySelectorAll('.children').forEach(c=>{if
 const pop=document.getElementById('pop');
 function placePop(el){const r=el.getBoundingClientRect();
   pop.style.top=(r.bottom+8)+'px'; pop.style.left=Math.max(10,Math.min(r.left,window.innerWidth-300))+'px';}
-function showPop(term,el){ pop.innerHTML='<b>'+term+'</b>'+GLOSS[term]; pop.classList.add('on'); placePop(el); }
+function showPop(term,el){ pop.innerHTML='<b class="pt">'+term+'</b>'+GLOSS[term]; pop.classList.add('on'); placePop(el); }
 function showTip(html,el){ pop.innerHTML=html; pop.classList.add('on'); placePop(el); }
 // hover reveals: abbreviation full names, and footnote citations
 document.addEventListener('mouseover',e=>{
