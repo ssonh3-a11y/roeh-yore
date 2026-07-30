@@ -18,16 +18,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Frank+Ruhl+Libre:wght@400;500;700;800&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#EBE6DB; --card:#F8F4EB; --card-2:#F3EDE0;
-  --ink:#211C15; --ink-soft:#6B6153; --ink-faint:#9A9083;
-  --rule:#D7CEBC; --line:#E2DACA; --gilt:#A9812F; --muted:#CFC6B4;
+  --paper:#F0F6EE; --card:#FFFFFF; --card-2:#E9F1E7;
+  --ink:#1B211C; --ink-soft:#3C473E; --ink-faint:#79837A;
+  --rule:#CFDECD; --line:#D9E5D7; --gilt:#A9812F; --muted:#C3D6C1;
   --display:'Suez One','Frank Ruhl Libre',serif;
   --body:'Frank Ruhl Libre','Noto Serif Hebrew','Times New Roman',serif;
   --ui:'Heebo',system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
 body{margin:0;color:var(--ink);font-family:var(--body);line-height:1.72;
-  background:radial-gradient(1100px 520px at 50% -170px,#F7F2E6 0%,rgba(247,242,230,0) 62%),var(--paper);
+  background:radial-gradient(1100px 520px at 50% -170px,#F4FAF3 0%,rgba(247,242,230,0) 62%),var(--paper);
   background-attachment:fixed}
 .wrap{max-width:660px;margin:0 auto;padding:20px 20px 64px}
 .back{display:inline-flex;align-items:center;gap:.45em;font-family:var(--ui);font-size:14px;
@@ -73,12 +73,31 @@ h2::after{content:'';flex:1;height:1px;background:var(--rule)}
   margin-top:34px;padding-top:22px;border-top:1px solid var(--rule)}
 .note a{color:var(--ink-soft)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.sitebar{position:sticky;top:0;z-index:60;background:var(--card);border-bottom:1px solid var(--rule)}
+.sitebar-in{max-width:1180px;margin:0 auto;padding:9px 20px 10px;display:flex;align-items:center;gap:12px}
+.tbx-home{flex:none;display:flex;align-items:center;line-height:0;text-decoration:none}
+.tbx-mark{height:30px;width:auto;display:block;opacity:.9;transition:opacity .15s}
+.tbx-home:hover .tbx-mark{opacity:1}
+.tbx-nav{font-family:var(--ui);font-size:13.5px;color:var(--ink-soft);text-decoration:none;padding:5px 8px;border-radius:8px;transition:background .15s,color .15s}
+.tbx-nav:hover{background:var(--card-2);color:var(--ink)}
+.tbx-sp{flex:1 1 auto}
+.tbx-here{font-family:var(--ui);font-size:12.5px;color:var(--brand);border:1px solid var(--brand);border-radius:8px;padding:5px 11px;white-space:nowrap;opacity:.55}
+@media(max-width:760px){.sitebar-in{gap:9px;padding-inline:14px}.tbx-here{display:none}}
 </style>
 </head>
 <body>
+
+<div class="sitebar"><div class="sitebar-in">
+  <a href="/" class="tbx-home" title="לדף הבית" aria-label="לדף הבית"><img class="tbx-mark" src="mark.svg" alt=""></a>
+  <a href="/" class="tbx-nav">נושאים</a>
+  <span class="tbx-sp"></span>
+  <span class="tbx-here">על האתר</span>
+</div></div>
+
 <div class="wrap">
 
-  <a class="back" href="/" aria-label="חזרה לרואה יורה" title="חזרה לרואה יורה">
+  <a class="back" style="display:none" href="/" aria-label="חזרה לרואה יורה" title="חזרה לרואה יורה">
     <img class="mini" src="logo.svg" alt="" aria-hidden="true">
     <span dir="ltr" class="ar">&#8594;</span>
   </a>
