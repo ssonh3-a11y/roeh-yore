@@ -317,6 +317,23 @@ details.op-prose-x>.prose-body{padding:0 15px 12px}
 .sitebar-in{position:relative}
 .tbx-caret{font-size:9px;margin-inline-start:4px;color:var(--arrow)}
 .tbx-nav.on{background:var(--hover);color:var(--ink)}
+.sr-panel{position:absolute;top:100%;inset-inline-end:20px;z-index:70;width:min(460px,92vw);max-height:min(72vh,560px);overflow:auto;background:var(--card);border:1px solid var(--rule);border-radius:0 0 12px 12px;box-shadow:0 10px 26px rgba(24,40,26,.14);display:none;font-family:var(--ui)}
+.sr-panel.open{display:block}
+.srp-cat{font-size:10.5px;font-weight:600;letter-spacing:.09em;color:var(--ink-faint);padding:9px 15px 5px;background:var(--card-2);position:sticky;top:0}
+.srp-t{display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:0;cursor:pointer;padding:10px 15px;font-family:var(--ui);text-align:start;border-top:1px solid var(--line)}
+.srp-t:hover{background:var(--hover)}
+.srp-bar{flex:none;width:3px;height:17px;border-radius:2px;background:var(--sj,var(--gilt))}
+.srp-name{font-size:14px;color:var(--ink);font-weight:500}
+.srp-meta{font-size:11px;color:var(--ink-faint);margin-inline-start:auto;white-space:nowrap}
+.srp-c{display:block;width:100%;background:transparent;border:0;cursor:pointer;padding:9px 15px;font-family:var(--ui);text-align:start;border-top:1px solid var(--line)}
+.srp-c:hover{background:var(--hover)}
+.srp-w{font-size:10.5px;color:var(--ink-faint);margin-bottom:2px}
+.srp-sec{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:3px}
+.srp-sn{font-size:11.5px;color:var(--ink-soft);line-height:1.6}
+.srp-sn mark{background:#F3E6A8;color:inherit;border-radius:2px;padding:0 1px}
+.srp-none{padding:16px 15px;font-size:13px;color:var(--ink-faint)}
+.srp-more{padding:9px 15px;font-size:11.5px;color:var(--ink-faint);border-top:1px solid var(--line)}
+@media(max-width:760px){.sr-panel{inset-inline:14px;width:auto}}
 .tbx-menu{position:absolute;top:100%;inset-inline-start:20px;z-index:70;min-width:250px;max-width:min(420px,90vw);max-height:min(70vh,520px);overflow:auto;background:var(--card);border:1px solid var(--rule);border-radius:0 0 12px 12px;box-shadow:0 10px 26px rgba(24,40,26,.14);padding:5px 0;display:none;font-family:var(--ui)}
 .tbx-menu.open{display:block}
 .tbm-s{display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:0;cursor:pointer;padding:9px 15px;font-family:var(--ui);font-size:14px;color:var(--ink);text-align:start}
@@ -338,6 +355,12 @@ details.op-prose-x>.prose-body{padding:0 15px 12px}
 .tbx-slot{flex:none;min-width:0}
 .tbx-slot .searchbox{margin:0;max-width:250px}
 .tbx-about{font-family:var(--ui);font-size:12.5px;color:var(--brand);text-decoration:none;border:1px solid var(--brand);border-radius:8px;padding:5px 11px;white-space:nowrap;transition:background .15s}
+@keyframes sjflash{0%{background:transparent}22%{background:var(--card-2)}100%{background:transparent}}
+.subjects.flash{animation:sjflash 1.1s ease-out 1;border-radius:12px}
+body:has(.grid.home) .tbx-about{display:inline-block;background:var(--brand);color:#fff;border-color:var(--brand)}
+body:has(.grid.home) .tbx-about:hover{background:#1e2634}
+@media(prefers-reduced-motion:reduce){.subjects.flash{animation:none}}
+
 .tbx-about:hover{background:var(--card-2)}
 .tbx-sbtn{display:none;flex:none;width:32px;height:32px;align-items:center;justify-content:center;border:1px solid var(--rule);border-radius:8px;background:var(--card);color:var(--arrow);cursor:pointer;padding:0}
 .tbx-sbtn:hover{background:var(--hover)}
@@ -1043,7 +1066,7 @@ h1.topic{color:var(--brand)}
 
 <div id="pop"></div>
 <div id="src"></div>
-<footer class="wrap"><span class="ft-nav"><a href="odot.html">על האתר והסיכומים</a></span>הצבעים מסמנים את שכבת המקור במסורת (פסוק · משנה · גמרא · ראשונים · שו״ע · רמ״א · אחרונים · פוסקי זמננו)</footer>
+<footer class="wrap"><span class="ft-nav"><a href="odot.html">על האתר והסיכומים</a></span></footer>
 
 <script>
 (function(){
@@ -1063,6 +1086,22 @@ h1.topic{color:var(--brand)}
   function goHome(e){ if(e)e.preventDefault();
     if(typeof showHome==='function')showHome(); }
   var hb=document.getElementById('tbx-home'); if(hb)hb.onclick=goHome;
+  var nb2=document.getElementById('tbx-nav');
+  if(nb2)nb2.addEventListener('click',function(ev){
+    var g=document.querySelector('.grid');
+    if(!g||!g.classList.contains('home'))return;
+    ev.preventDefault(); ev.stopPropagation();
+    var m=document.getElementById('tbx-menu');
+    if(m){m.classList.remove('open');nb2.classList.remove('on');}
+    var s=document.querySelector('.subjects');
+    if(!s)return;
+    s.scrollIntoView({behavior:'smooth',block:'start'});
+    s.classList.remove('flash');
+    void s.offsetWidth;
+    s.classList.add('flash');
+    setTimeout(function(){s.classList.remove('flash');},1300);
+  },true);
+
   
   var sx=document.getElementById('tbx-sbtn');
   if(sx&&slot)sx.onclick=function(){
@@ -1136,6 +1175,104 @@ h1.topic{color:var(--brand)}
   if(document.readyState==='loading')
     document.addEventListener('DOMContentLoaded',obs);
   else obs();
+})();
+(function(){
+  var SUBJC={'\u05ea\u05e4\u05d9\u05dc\u05d4 \u05d5\u05d1\u05e8\u05db\u05d5\u05ea':'var(--pasuk)',
+             '\u05e9\u05d1\u05ea':'var(--zman)',
+             '\u05d0\u05d9\u05e1\u05d5\u05e8 \u05d5\u05d4\u05d9\u05ea\u05e8':'var(--rishon)',
+             '\u05e0\u05d9\u05d3\u05d4':'var(--rama)'};
+  function nmap(s){
+    var out='',map=[];
+    for(var i=0;i<s.length;i++){
+      var c=s[i];
+      if(c==='\u05f4'||c==='"'||c==='\u05f3'||c==="'")continue;
+      out+=c.toLowerCase(); map.push(i);
+    }
+    return {n:out,m:map};
+  }
+  function snip2(txt,term){
+    var r=nmap(txt), i=r.n.indexOf(term);
+    if(i<0)return {pre:txt.slice(0,110)+(txt.length>110?'\u2026':''),hit:'',post:''};
+    var s=r.m[i], e=(i+term.length<r.m.length)?r.m[i+term.length]:txt.length;
+    var a=Math.max(0,s-45), b=Math.min(txt.length,e+65);
+    return {pre:(a?'\u2026':'')+txt.slice(a,s), hit:txt.slice(s,e),
+            post:txt.slice(e,b)+(b<txt.length?'\u2026':'')};
+  }
+  var panel=null;
+  function ensure(){
+    if(panel)return panel;
+    var host=document.querySelector('.sitebar-in'); if(!host)return null;
+    panel=document.createElement('div');
+    panel.className='sr-panel'; panel.id='sr-panel';
+    host.appendChild(panel); return panel;
+  }
+  function close(){ if(panel)panel.classList.remove('open'); }
+  window.__srClose=close;
+  function go(tid,sid){ close();
+    if(typeof openTopic==='function')openTopic(tid,sid);
+    else location.href=tid+'.html'; }
+  window.__srRun=function(q){
+    var p=ensure(); if(!p)return;
+    var terms=_norm(q).split(/\s+/).filter(Boolean);
+    if(!terms.length){close();return;}
+    if(!FULL_LOADED){
+      p.innerHTML='<div class="srp-none">\u05d8\u05d5\u05e2\u05df\u2026</div>';
+      p.classList.add('open');
+      ensureFullContent().then(function(){window.__srRun(q);}); return;
+    }
+    var idx=buildSearchIndex();
+    var hits=idx.filter(function(r){
+      return terms.every(function(t){return r.hay.indexOf(t)>-1;});});
+    var seen={}, tops=[], cont=[];
+    hits.forEach(function(r){
+      var isTop=terms.every(function(t){
+        return r.title.indexOf(t)>-1 || _norm(r.subj).indexOf(t)>-1;});
+      if(isTop){ if(!seen[r.tid]){seen[r.tid]=1;tops.push(r);} }
+      else cont.push(r);
+    });
+    var h='';
+    if(tops.length){
+      h+='<div class="srp-cat">\u05e0\u05d5\u05e9\u05d0\u05d9\u05dd</div>';
+      tops.slice(0,8).forEach(function(r){
+        h+='<button class="srp-t" data-t="'+esc(r.tid)+'" data-s="" '+
+           'style="--sj:'+(SUBJC[r.subj]||'var(--gilt)')+'">'+
+           '<span class="srp-bar"></span>'+
+           '<span class="srp-name">\u25c6 '+esc(r.topic)+'</span>'+
+           '<span class="srp-meta">'+esc(r.subj)+'</span></button>';
+      });
+    }
+    if(cont.length){
+      h+='<div class="srp-cat">\u05d1\u05ea\u05d5\u05da \u05d4\u05e1\u05d9\u05db\u05d5\u05de\u05d9\u05dd</div>';
+      cont.slice(0,25).forEach(function(r){
+        var s=snip2(r.txt,terms[0]);
+        h+='<button class="srp-c" data-t="'+esc(r.tid)+'" data-s="'+esc(r.sid)+'">'+
+           '<div class="srp-w">'+esc(r.subj)+(r.subj?' \u00b7 ':'')+esc(r.topic)+'</div>'+
+           '<div class="srp-sec">'+esc(r.sec)+'</div>'+
+           '<div class="srp-sn">'+esc(s.pre)+
+           (s.hit?'<mark>'+esc(s.hit)+'</mark>':'')+esc(s.post)+'</div></button>';
+      });
+      if(cont.length>25)
+        h+='<div class="srp-more">'+(cont.length-25)+
+           ' \u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05e0\u05d5\u05e1\u05e4\u05d5\u05ea</div>';
+    }
+    if(!h)h='<div class="srp-none">\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 '+
+            '\u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05e2\u05d1\u05d5\u05e8 \u201c'+
+            esc(q)+'\u201d.</div>';
+    p.innerHTML=h; p.classList.add('open');
+    p.querySelectorAll('[data-t]').forEach(function(b){
+      b.onclick=function(){go(b.getAttribute('data-t'),
+                             b.getAttribute('data-s')||undefined);};});
+  };
+  document.addEventListener('click',function(ev){
+    var p=document.getElementById('sr-panel');
+    if(!p||!p.classList.contains('open'))return;
+    if(p.contains(ev.target))return;
+    var sb=document.getElementById('searchbox');
+    if(sb&&sb.contains(ev.target))return;
+    close();
+  });
+  document.addEventListener('keydown',function(ev){
+    if(ev.key==='Escape')close(); });
 })();
 const SITE=JSON.parse(document.getElementById('content').textContent);
 SITE.title="רואה יורה"; const _TITLE0=document.title;
@@ -1780,7 +1917,6 @@ function wireAsk(){
   async function go(){
     const question=q.value.trim(); if(!question)return;
     btn.disabled=true; ans.classList.add('on'); ans.innerHTML='חושב<span class="spin"></span>';
-    if(ASK_SCOPE!=='topic'){await ensureFullContent();}
     const sys="אתה עוזר לימוד לקראת מבחני ההלכה של הרבנות הראשית. "+askScopeDesc()+" ענה על סמך החומר שלפניך, אך פעל כמומחה שמבין את החומר:\n"+
       "1. אם השאלה נוגעת לעיקרון או מקרה שנידון בסיכום — אף בניסוח שונה — יישם אותו והפנה לסעיף הרלוונטי.\n"+
       "2. הצג בקצרה את מהלך הדיון: השיטות (משנה, גמרא, ראשונים, שו״ע, רמ״א, אחרונים, פוסקי זמננו) ושמות בעליהן, בסגנון תשובת מבחן.\n"+
@@ -1940,17 +2076,6 @@ function _plain(s){return String(s||'').replace(/\*\*/g,'').replace(/~~/g,'')
   .replace(/\\note\{([^}]*)\}/g,'$1').replace(/\\cite\{([^}]*)\}\{[^}]*\}/g,'$1')
   .replace(/\\ref\{([^}]*)\}\{[^}]*\}/g,'$1').replace(/\s+/g,' ').trim();}
 function _norm(s){return String(s||'').replace(/[\u05f4"\u05f3']/g,'').toLowerCase();}
-var FULL_LOADED=false, FULL_PROMISE=null;
-function ensureFullContent(){
-  if(FULL_LOADED)return Promise.resolve();
-  if(FULL_PROMISE)return FULL_PROMISE;
-  FULL_PROMISE=fetch('all-content.json').then(function(r){return r.json();}).then(function(all){
-    var by={}; (all.topics||[]).forEach(function(t){by[t.id]=t;});
-    SITE.topics=SITE.topics.map(function(t){ return (t.stub&&by[t.id])?by[t.id]:t; });
-    FULL_LOADED=true; SEARCH_IDX=null; SEARCH_IDX=null;
-  }).catch(function(e){ console.error('content load failed',e); FULL_PROMISE=null; });
-  return FULL_PROMISE;
-}
 var SEARCH_IDX=null;
 function buildSearchIndex(){
   if(SEARCH_IDX)return SEARCH_IDX;
@@ -1975,9 +2100,7 @@ function _snip(txt,term){var i=_norm(txt).indexOf(term);
   var a=Math.max(0,i-50),b=Math.min(txt.length,i+term.length+70);
   return {pre:(a?'\u2026':'')+txt.slice(a,i),hit:txt.slice(i,i+term.length),
           post:txt.slice(i+term.length,b)+(b<txt.length?'\u2026':'')};}
-async function runSearch(q){
-  if(!FULL_LOADED){main.innerHTML='<div class="sr-head">טוען את כל הסיכומים…</div>';}
-  await ensureFullContent();
+function runSearch(q){
   var terms=_norm(q).split(/\s+/).filter(Boolean); if(!terms.length){showHome();return;}
   var hits=buildSearchIndex().filter(function(r){return terms.every(function(t){return r.hay.indexOf(t)>-1;});});
   hits.sort(function(a,b){var f=function(r){return terms.every(function(t){return r.title.indexOf(t)>-1;})?0:1;};return f(a)-f(b);});
@@ -1998,9 +2121,7 @@ async function runSearch(q){
   main.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function openTopic(id,gotoSec){
-  const _D0=SITE.topics.find(t=>t.id===id);
-  if(_D0&&_D0.stub){location.href=_D0.id+'.html';return;}
-  const D=_D0||SITE.topics[0];
+  const D=SITE.topics.find(t=>t.id===id)||SITE.topics[0];
   deriveTopic(D); ASK_SCOPE='topic';
   document.querySelector('.grid').classList.remove('home');
   var _ch=_chelek(D),_sm=_simanOnly(D),_sj=D.subject||'';
@@ -2009,7 +2130,6 @@ function openTopic(id,gotoSec){
   if(_slk)_slk.onclick=function(e){e.preventDefault();showHome(this.getAttribute('data-homesubject'));};
   document.getElementById('site-name').style.display='flex';
   document.getElementById('htitle').textContent=D.topic.title+(_sm?' ('+_sm+')':'');{var _cx=document.getElementById('tbx-ctx');if(_cx)_cx.innerHTML=(_sj?'<span class="ctx-sub">'+esc(_sj)+'</span>':'')+(_sm?'<span class="ctx-sim">\u05e1\u05d9\u05f3 '+esc(_sm)+'</span>':'')+'<span class="ctx-ttl">'+esc(D.topic.shortTitle||D.topic.title)+'</span>';}
-  try{if(window.history&&history.replaceState)history.replaceState(null,'',D.id+'.html');}catch(_e){}
   document.title=(D.topic.shortTitle||D.topic.title)+(_sm?' (סימן '+_sm+')':'')+(D.subject?' — סיכום ל'+D.subject:'')+' | '+(SITE.title||'רואֶה יורֶה');
   document.getElementById('home-link').style.display=SITE.topics.length>1?'inline-block':'none';
   buildNav(); ((INTRO.body||'').replace(/\s/g,'')?showIntro():(SECORDER.length?showSection(SECORDER[0]):showIntro())); buildTopicbar(); if(gotoSec&&SECTIONS[gotoSec])showSection(gotoSec);
@@ -2028,7 +2148,7 @@ function showHome(openSubject){
   SITE.topics.forEach(t=>{const s=t.subject||'כללי'; if(!byId[s]){byId[s]={subject:s,topics:[]};groups.push(byId[s]);} byId[s].topics.push(t);});
   const simanNum=t=>parseInt((t.topic.siman||'').split('.').pop())||0;
   groups.forEach(g=>g.topics.sort((a,b)=>simanNum(a)-simanNum(b)));
-  const SUBJCOL=function(s){var m={'תפילה וברכות':'var(--pasuk)','שבת':'var(--zman)','איסור והיתר':'var(--rishon)','נידה':'var(--rama)'};return m[s]||'var(--gilt)';}; const card=t=>{const n=t.secCount||Object.keys(t.sections).length; const eb=(t.topic.eyebrow||'').split('·').slice(-1)[0].trim();
+  const SUBJCOL=function(s){var m={'תפילה וברכות':'var(--pasuk)','שבת':'var(--zman)','איסור והיתר':'var(--rishon)','נידה':'var(--rama)'};return m[s]||'var(--gilt)';}; const card=t=>{const n=Object.keys(t.sections).length; const eb=(t.topic.eyebrow||'').split('·').slice(-1)[0].trim();
     const rec=t.recommendedOrder?' rec':'';
     const badge=t.recommendedOrder?'<span class="rec-badge">'+t.recommendedOrder+'</span>':'';
     return '<a class="topic-card'+rec+'" href="'+t.id+'.html" data-topic="'+t.id+'">'+badge+'<div class="tc-eyebrow">'+esc(eb)+'</div>'+
@@ -2056,10 +2176,10 @@ document.getElementById('site-name').onclick=e=>{e.preventDefault();showHome();}
 (function(){var inp=document.getElementById('q-search'),box=document.getElementById('searchbox'),cl=document.getElementById('sb-clear');
   if(!inp)return; var tm=null;
   inp.addEventListener('input',function(){box.classList.toggle('has',!!inp.value);clearTimeout(tm);
-    var v=inp.value.trim(); tm=setTimeout(function(){ if(v.length>=2)runSearch(v); else if(!v)showHome(); },220);});
-  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(tm);var v=inp.value.trim();if(v)runSearch(v);}
-    if(e.key==='Escape'){inp.value='';box.classList.remove('has');showHome();}});
-  if(cl)cl.onclick=function(){inp.value='';box.classList.remove('has');inp.focus();showHome();};})();
+    var v=inp.value.trim(); tm=setTimeout(function(){ if(v.length>=2)window.__srRun(v); else window.__srClose(); },220);});
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'){clearTimeout(tm);var v=inp.value.trim();if(v)window.__srRun(v);}
+    if(e.key==='Escape'){inp.value='';box.classList.remove('has');window.__srClose();}});
+  if(cl)cl.onclick=function(){inp.value='';box.classList.remove('has');inp.focus();window.__srClose();};})();
 // --- הלוגו בסרגל: שכפול מהכותרת + חשיפה לפי גלילה ---
 function fillBarLogo(){
   var host=document.getElementById('tb-logo'); if(!host||host.firstChild) return;
