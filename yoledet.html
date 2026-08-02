@@ -1750,6 +1750,7 @@ function wireAsk(){
   async function go(){
     const question=q.value.trim(); if(!question)return;
     btn.disabled=true; ans.classList.add('on'); ans.innerHTML='חושב<span class="spin"></span>';
+    if(ASK_SCOPE!=='topic'){await ensureFullContent();}
     const sys="אתה עוזר לימוד לקראת מבחני ההלכה של הרבנות הראשית. "+askScopeDesc()+" ענה על סמך החומר שלפניך, אך פעל כמומחה שמבין את החומר:\n"+
       "1. אם השאלה נוגעת לעיקרון או מקרה שנידון בסיכום — אף בניסוח שונה — יישם אותו והפנה לסעיף הרלוונטי.\n"+
       "2. הצג בקצרה את מהלך הדיון: השיטות (משנה, גמרא, ראשונים, שו״ע, רמ״א, אחרונים, פוסקי זמננו) ושמות בעליהן, בסגנון תשובת מבחן.\n"+
@@ -1909,6 +1910,17 @@ function _plain(s){return String(s||'').replace(/\*\*/g,'').replace(/~~/g,'')
   .replace(/\\note\{([^}]*)\}/g,'$1').replace(/\\cite\{([^}]*)\}\{[^}]*\}/g,'$1')
   .replace(/\\ref\{([^}]*)\}\{[^}]*\}/g,'$1').replace(/\s+/g,' ').trim();}
 function _norm(s){return String(s||'').replace(/[\u05f4"\u05f3']/g,'').toLowerCase();}
+var FULL_LOADED=false, FULL_PROMISE=null;
+function ensureFullContent(){
+  if(FULL_LOADED)return Promise.resolve();
+  if(FULL_PROMISE)return FULL_PROMISE;
+  FULL_PROMISE=fetch('all-content.json').then(function(r){return r.json();}).then(function(all){
+    var by={}; (all.topics||[]).forEach(function(t){by[t.id]=t;});
+    SITE.topics=SITE.topics.map(function(t){ return (t.stub&&by[t.id])?by[t.id]:t; });
+    FULL_LOADED=true; SEARCH_IDX=null; SEARCH_IDX=null;
+  }).catch(function(e){ console.error('content load failed',e); FULL_PROMISE=null; });
+  return FULL_PROMISE;
+}
 var SEARCH_IDX=null;
 function buildSearchIndex(){
   if(SEARCH_IDX)return SEARCH_IDX;
@@ -1933,7 +1945,9 @@ function _snip(txt,term){var i=_norm(txt).indexOf(term);
   var a=Math.max(0,i-50),b=Math.min(txt.length,i+term.length+70);
   return {pre:(a?'\u2026':'')+txt.slice(a,i),hit:txt.slice(i,i+term.length),
           post:txt.slice(i+term.length,b)+(b<txt.length?'\u2026':'')};}
-function runSearch(q){
+async function runSearch(q){
+  if(!FULL_LOADED){main.innerHTML='<div class="sr-head">טוען את כל הסיכומים…</div>';}
+  await ensureFullContent();
   var terms=_norm(q).split(/\s+/).filter(Boolean); if(!terms.length){showHome();return;}
   var hits=buildSearchIndex().filter(function(r){return terms.every(function(t){return r.hay.indexOf(t)>-1;});});
   hits.sort(function(a,b){var f=function(r){return terms.every(function(t){return r.title.indexOf(t)>-1;})?0:1;};return f(a)-f(b);});
@@ -1965,6 +1979,7 @@ function openTopic(id,gotoSec){
   if(_slk)_slk.onclick=function(e){e.preventDefault();showHome(this.getAttribute('data-homesubject'));};
   document.getElementById('site-name').style.display='flex';
   document.getElementById('htitle').textContent=D.topic.title+(_sm?' ('+_sm+')':'');{var _cx=document.getElementById('tbx-ctx');if(_cx)_cx.innerHTML=(_sj?'<span class="ctx-sub">'+esc(_sj)+'</span>':'')+(_sm?'<span class="ctx-sim">\u05e1\u05d9\u05f3 '+esc(_sm)+'</span>':'')+'<span class="ctx-ttl">'+esc(D.topic.shortTitle||D.topic.title)+'</span>';}
+  try{if(window.history&&history.replaceState)history.replaceState(null,'',D.id+'.html');}catch(_e){}
   document.title=(D.topic.shortTitle||D.topic.title)+(_sm?' (סימן '+_sm+')':'')+(D.subject?' — סיכום ל'+D.subject:'')+' | '+(SITE.title||'רואֶה יורֶה');
   document.getElementById('home-link').style.display=SITE.topics.length>1?'inline-block':'none';
   buildNav(); ((INTRO.body||'').replace(/\s/g,'')?showIntro():(SECORDER.length?showSection(SECORDER[0]):showIntro())); buildTopicbar(); if(gotoSec&&SECTIONS[gotoSec])showSection(gotoSec);
@@ -1983,7 +1998,7 @@ function showHome(openSubject){
   SITE.topics.forEach(t=>{const s=t.subject||'כללי'; if(!byId[s]){byId[s]={subject:s,topics:[]};groups.push(byId[s]);} byId[s].topics.push(t);});
   const simanNum=t=>parseInt((t.topic.siman||'').split('.').pop())||0;
   groups.forEach(g=>g.topics.sort((a,b)=>simanNum(a)-simanNum(b)));
-  const SUBJCOL=function(s){var m={'תפילה וברכות':'var(--pasuk)','שבת':'var(--zman)','איסור והיתר':'var(--rishon)','נידה':'var(--rama)'};return m[s]||'var(--gilt)';}; const card=t=>{const n=Object.keys(t.sections).length; const eb=(t.topic.eyebrow||'').split('·').slice(-1)[0].trim();
+  const SUBJCOL=function(s){var m={'תפילה וברכות':'var(--pasuk)','שבת':'var(--zman)','איסור והיתר':'var(--rishon)','נידה':'var(--rama)'};return m[s]||'var(--gilt)';}; const card=t=>{const n=t.secCount||Object.keys(t.sections).length; const eb=(t.topic.eyebrow||'').split('·').slice(-1)[0].trim();
     const rec=t.recommendedOrder?' rec':'';
     const badge=t.recommendedOrder?'<span class="rec-badge">'+t.recommendedOrder+'</span>':'';
     return '<a class="topic-card'+rec+'" href="'+t.id+'.html" data-topic="'+t.id+'">'+badge+'<div class="tc-eyebrow">'+esc(eb)+'</div>'+
