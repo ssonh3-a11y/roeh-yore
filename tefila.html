@@ -953,7 +953,7 @@ h1.topic{color:var(--brand)}
     void s.offsetWidth;
     s.classList.add('flash');
     setTimeout(function(){s.classList.remove('flash');},1300);
-  },true);
+  },false);
 
   
   var sx=document.getElementById('tbx-sbtn');
@@ -995,8 +995,7 @@ h1.topic{color:var(--brand)}
           a.innerHTML=(sl?'<span class="tbm-sim">'+esc(sl)+'</span>':'')+
                       esc(t.topic.shortTitle||t.topic.title);
           a.onclick=function(e2){ e2.stopPropagation(); close();
-            if(typeof openTopic==='function')openTopic(t.id);
-            else location.href=t.id+'.html'; };
+            var _c=(window.__OPEN_TOPIC||'');if(_c===t.id&&typeof openTopic==='function'){openTopic(t.id);return;}location.href=t.id+'.html'; };
           w.appendChild(a);
         });
         row.parentNode.insertBefore(w,row.nextSibling);
@@ -1062,8 +1061,9 @@ h1.topic{color:var(--brand)}
   function close(){ if(panel)panel.classList.remove('open'); }
   window.__srClose=close;
   function go(tid,sid){ close();
-    if(typeof openTopic==='function')openTopic(tid,sid);
-    else location.href=tid+'.html'; }
+    var cur=(window.__OPEN_TOPIC||'');
+    if(cur===tid&&typeof openTopic==='function'){openTopic(tid,sid);return;}
+    location.href=tid+'.html'; }
   window.__srRun=function(q){
     var p=ensure(); if(!p)return;
     var terms=_norm(q).split(/\s+/).filter(Boolean);
@@ -1974,7 +1974,9 @@ function runSearch(q){
   main.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function openTopic(id,gotoSec){
-  const D=SITE.topics.find(t=>t.id===id)||SITE.topics[0];
+  const _D0=SITE.topics.find(t=>t.id===id);
+  if(_D0&&_D0.stub){location.href=_D0.id+'.html';return;}
+  const D=_D0||SITE.topics[0];
   deriveTopic(D); ASK_SCOPE='topic';
   document.querySelector('.grid').classList.remove('home');
   var _ch=_chelek(D),_sm=_simanOnly(D),_sj=D.subject||'';
@@ -2055,13 +2057,14 @@ document.addEventListener('keydown',function(e){
   if((e.key==='Enter'||e.key===' ')&&document.activeElement&&document.activeElement.id==='tb-logo'){
     e.preventDefault(); showHome();}
 });
-document.addEventListener('DOMContentLoaded',function(){
+(function(){function _boot(){
   var _t=(window.__OPEN_TOPIC||'');
   if(_t&&SITE.topics.some(function(x){return x.id===_t;})){openTopic(_t);}
   else if(SITE.topics.length===1){openTopic(SITE.topics[0].id);}
   else {showHome();}
-  wireLogoReveal();
-});
+  wireLogoReveal();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_boot);
+else _boot();})();
 </script>
 
 <script>
