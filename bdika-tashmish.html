@@ -119,6 +119,30 @@ details.intro-strip[open]>summary::before{transform:rotate(90deg)}
 sup.fn{color:var(--gilt);cursor:pointer;font-size:.7em;margin-inline-start:1px;font-weight:700;user-select:none}
 sup.fn:hover{color:var(--pesak)}
 .abbr{cursor:help}
+.hlq{background-image:linear-gradient(transparent 12%,var(--hlc) 12%,var(--hlc) 88%,transparent 88%);background-repeat:no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.dual-v[hidden]{display:none!important}
+.dual-wand{background:none;border:none;padding:0;margin:0;line-height:0;box-shadow:none}
+.dl-p.t-a{background:#FBDDDA;border-color:#E5A49D}
+.dl-p.t-b{background:#FBF3D2;border-color:#DAC275}
+.dl-p.t-c{background:#E6F2D8;border-color:#AACA85}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px}
+.dl-grid>.dl-p{margin-bottom:0}
+.gader.lbar .gd-label{display:flex;align-items:center;gap:8px}
+.gader.lbar .gd-label::before{content:"";flex:0 0 3px;width:3px;height:15px;background:var(--gd-ink,#A6845E);border-radius:2px}
+.op-xp{border:1px solid var(--boxb);border-radius:9px;background:var(--box);margin:11px 0}
+.op-xp>summary{cursor:pointer;list-style:none;padding:11px 16px;display:flex;align-items:center;gap:10px;font-family:var(--ui);font-size:14px;font-weight:500}
+.op-xp>summary::-webkit-details-marker{display:none}
+.op-xp>summary .xp-hint{margin-inline-start:auto;color:var(--ink-faint);font-size:12px;font-weight:600}
+.op-xp>.xp-body{padding:0 14px 10px}
+.op-tir{background:#EDF2F6;border:1px solid #C5D5E0;border-radius:10px;margin:12px 0}
+.op-tir>summary{cursor:pointer;list-style:none;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--ui);font-size:11.5px;letter-spacing:.07em;color:#33586F}
+.op-tir>summary::-webkit-details-marker{display:none}
+.op-tir .tg-q{padding:0 14px 10px;font-size:15px;line-height:1.85}
+.op-tir .tg-a{margin:0 14px 11px;border-top:1px solid #C5D5E0;padding-top:7px}
+.op-tir .tg-a>summary{cursor:pointer;list-style:none;font-family:var(--ui);font-size:12px;color:#33586F}
+.op-tir .tg-a>summary::-webkit-details-marker{display:none}
+.op-tir .tg-a .tg-at{padding-top:6px;font-size:14.5px;line-height:1.85}
+.op-subhead .sh-tag{font-family:var(--ui);font-size:10.5px;letter-spacing:.06em;color:#8A6D3F;background:#F7EFDD;padding:2px 9px;border-radius:6px;margin-inline-start:8px;font-weight:500}
 .src-conn{font-weight:400;color:var(--ink-soft);font-size:.92em}
 .src-ref{font-family:var(--ui);font-size:12.5px;font-weight:500;color:var(--ink-soft)}
 .src-ref .srclink{color:inherit;border-bottom-color:#c3b48f}
@@ -637,7 +661,7 @@ h1.topic{color:var(--brand)}
 /* GADER-LAYER-v3 */
 .gader{position:relative;border:1.5px dashed var(--gd-line,#C0A878);border-radius:10px;
   background:var(--gd-bg,#FFFDF8);padding:22px 12px 15px;margin:18px 0}
-.gader-tag{position:absolute;top:-11px;inset-inline-start:auto;inset-inline-end:16px;
+.gader-tag{position:absolute;top:-11px;inset-inline-end:auto;inset-inline-start:16px;
   background:var(--bg,#FBFAF5);padding:0 9px;font-family:var(--ui);font-size:12px;
   letter-spacing:.04em;color:var(--gd-ink,#8A6D3F);font-weight:500}
 .gd-head{text-align:center;font-family:var(--ui);font-size:16px;font-weight:500;
@@ -665,7 +689,7 @@ h1.topic{color:var(--brand)}
 .gd-body{flex:1;min-width:0}
 .gd-row.nomark{cursor:default}
 .gd-row.nomark:hover{background:transparent}
-.gader-ref{position:absolute;top:-11px;inset-inline-end:auto;inset-inline-start:16px;
+.gader-ref{position:absolute;top:-11px;inset-inline-start:auto;inset-inline-end:16px;
   background:var(--bg,#FBFAF5);padding:0 8px;font-family:var(--ui);font-size:11px;
   color:var(--gd-src,#6C6558);text-decoration:none}
 .gader-ref:hover{color:var(--gd-ink,#8A6D3F);text-decoration:underline}
@@ -1041,13 +1065,14 @@ const NAMES=["רב האי גאון","בה״ג","ראבי״ה","מהר״י אבו
 "משנ״ב","מג״א","בה״ל","ר״ן","ש״ך","ב״י","ת״ק","מחבר","טור"];
 const LAY={pasuk:"פסוק",mishna:"משנה / תנאים",gemara:"גמרא",rishon:"ראשונים",shulchan:"שולחן ערוך",rama:"רמ״א",acharon:"אחרונים",zman:"פוסקי זמננו"};
 // abbreviation -> full name (hover reveals it; no visual marker)
-const ABBR={"רמ״ת":"רואה מחמת תשמיש","צ״ע":"צריך עיון","פנה״ל":"פניני הלכה","סד״ט":"סדרי טהרה","נו״ב":"נודע ביהודה","נקה״כ":"נקודות הכסף","רמב״ח":"רמי בר חמא","פיה״מ":"פירוש המשניות","יו״ט":"יום טוב","י״א":"יש אומרים","אא״כ":"אלא אם כן","ר״ל":"ריש לקיש","ע״ג":"על גבי","ל״ק":"לישנא קמא","בד״י":"בריה דרב יהושע","צ״ל":"צריך לומר","נו״כים":"נושאי הכלים","חת״ס":"חתם סופר","חוו״ד":"חוות דעת","מאכל״א":"מאכלות אסורות","רר״ר":"רי״ף, רמב״ם, רא״ש","כנה״ג":"כנסת הגדולה","צ״צ":"צרכי ציבור","ביהכנ״ס":"בית הכנסת","מ״ב":"משנה ברורה","מג״א":"מגן אברהם","רא״ש":"רבנו אשר (הרא״ש)","רמב״ם":"רבנו משה בן מימון","רמב״ן":"רבנו משה בן נחמן","רשב״א":"רבנו שלמה בן אדרת","רשב״ם":"רבנו שמואל בן מאיר","שו״ע":"שולחן ערוך","רמ״א":"רבי משה איסרליש","ט״ז":"טורי זהב","ש״ך":"שפתי כהן","פמ״ג":"פרי מגדים","פר״ח":"פרי חדש","א״ר":"אליה רבה","בה״ל":"ביאור הלכה","ר״ן":"רבנו נסים","ר״ח":"רבנו חננאל","ר״ת":"רבנו תם","רי״ף":"רבנו יצחק אלפסי","בה״ג":"בעל הלכות גדולות","רע״א":"רבי עקיבא איגר","ערוה״ש":"ערוך השולחן","סמ״ג":"ספר מצוות גדול","סמ״ק":"ספר מצוות קטן","תרוה״ד":"תרומת הדשן","של״ה":"שני לוחות הברית","ת״ק":"תנא קמא","תשב״ץ":"תשב״ץ (שמעון בן צמח)","ראבי״ה":"רבי אליעזר בן יואל הלוי","דרכ״מ":"דרכי משה","רש״י":"רבי שלמה יצחקי","ר״י":"רבנו יצחק (מבעלי התוס׳)","רא״מ":"רבנו אליהו מזרחי","מהרש״ל":"מהר״ש לוריא","אג״מ":"אגרות משה","שש״כ":"שמירת שבת כהלכתה","מהריט״ץ":"מהר״י טאיטאצאק","ילקו״י":"ילקוט יוסף","ש״ע":"שולחן ערוך","או״ז":"אור זרוע","או״ח":"אורח חיים","אשיר״י":"הגהות אשיר״י","הגש״ד":"הגהות שערי דורא","ריב״ש":"רבי יצחק בר ששת","רדב״ז":"רבי דוד בן זמרא","רמ״ה":"רבי מאיר הלוי אבולעפיה","רשב״ג":"רבן שמעון בן גמליאל","רש״ש":"רבי שמואל שטראשון","שג״ר":"הרב שג״ר (שמעון גרשון רוזנברג)","שעה״צ":"שער הציון","שעה״ת":"שערי תשובה","רי״ו":"רבנו ירוחם","ריטב״א":"רבי יום טוב אבן אשבילי","נמוק״י":"נימוקי יוסף","מרהש״ל":"מהר״ש לוריא","נ״ט":"נותן טעם","נטל״פ":"נותן טעם לפגם","ידס״ב":"יד סולדת בו","מצור״ל":"מצטמק ורע לו","מצוי״ל":"מצטמק ויפה לו","מאב״ד":"מאכל בן דרוסאי","משאצ״ל":"מלאכה שאינה צריכה לגופה","כ״צ":"כל צרכו","בא״ב":"בישול אחר בישול","סכו״ם":"סכין, כף ומזלג","פ״ר":"פסיק רישא","נפק״מ":"נפקא מינה","קיי״ל":"קיימא לן","לכו״ע":"לכולי עלמא","ק״ש":"קריאת שמע","ברהמ״ז":"ברכת המזון","מוצ״ש":"מוצאי שבת","ער״ש":"ערב שבת","רה״ר":"רשות הרבים","כה״ג":"כהאי גוונא","הו״א":"הוה אמינא","דנ״ל":"דניחא ליה","מלשצ״ג":"מלאכה שאינה צריכה לגופה","א״ח":"אורחות חיים","או״ה":"איסור והיתר הארוך","רע״י":"הרב עובדיה יוסף","מהרמ״מ":"מהר״ם מרוטנבורג","משנ״ב":"משנה ברורה","טוש״ע":"טור ושולחן ערוך","פת״ש":"פתחי תשובה","מחצה״ש":"מחצית השקל","ש״ד":"שערי דורא","תה״ד":"תרומת הדשן","נימוק״י":"נימוקי יוסף","גרש״ז":"הגאון רבי שלמה זלמן אוירבך","כלי״ר":"כלי ראשון","בינה״ש":"בין השמשות","ביהכ״נ":"בית הכנסת","ביהמ״ד":"בית המדרש","נו״כ":"נושאי כלים","אח״כ":"אחר כך","לאחמ״כ":"לאחר מכן","אעפ״י":"אף על פי","אע״ג":"אף על גב","א״כ":"אם כן","י״ל":"יש לומר","כנ״ל":"כנזכר לעיל","נ״ל":"נראה לי","הנ״ל":"הנזכר לעיל","ע״י":"על ידי","ע״מ":"על מנת","עפ״י":"על פי","ק״ו":"קל וחומר","בד״א":"במה דברים אמורים","בד״כ":"בדרך כלל","בע״ה":"בעזרת השם","הקב״ה":"הקדוש ברוך הוא","חז״ל":"חכמינו זכרונם לברכה","ע״ה":"עליו השלום","שו״ת":"שאלות ותשובות","זא״ז":"זה את זה","א״א":"אי אפשר","ש״ץ":"שליח ציבור","ב״ש":"בית שמאי","ב״ה":"בית הלל","כ״פ":"כן פסק","כו״פ":"כרתי ופלתי","ריב״ן":"רבי יהודה בן נתן"};
+const ABBR={"הגר״ע":"הרב עובדיה יוסף","של״ג":"שלטי גיבורים","רמ״ת":"רואה מחמת תשמיש","צ״ע":"צריך עיון","פנה״ל":"פניני הלכה","סד״ט":"סדרי טהרה","נו״ב":"נודע ביהודה","נקה״כ":"נקודות הכסף","רמב״ח":"רמי בר חמא","פיה״מ":"פירוש המשניות","יו״ט":"יום טוב","י״א":"יש אומרים","אא״כ":"אלא אם כן","ר״ל":"ריש לקיש","ע״ג":"על גבי","ל״ק":"לישנא קמא","בד״י":"בריה דרב יהושע","צ״ל":"צריך לומר","נו״כים":"נושאי הכלים","חת״ס":"חתם סופר","חוו״ד":"חוות דעת","מאכל״א":"מאכלות אסורות","רר״ר":"רי״ף, רמב״ם, רא״ש","כנה״ג":"כנסת הגדולה","צ״צ":"צרכי ציבור","ביהכנ״ס":"בית הכנסת","מ״ב":"משנה ברורה","מג״א":"מגן אברהם","רמב״ן":"רבנו משה בן נחמן","שו״ע":"שולחן ערוך","רמ״א":"רבי משה איסרליש","ט״ז":"טורי זהב","ש״ך":"שפתי כהן","פמ״ג":"פרי מגדים","פר״ח":"פרי חדש","א״ר":"אליה רבה","בה״ל":"ביאור הלכה","ר״ח":"רבנו חננאל","ר״ת":"רבנו תם","בה״ג":"בעל הלכות גדולות","רע״א":"רבי עקיבא איגר","ערוה״ש":"ערוך השולחן","סמ״ג":"ספר מצוות גדול","סמ״ק":"ספר מצוות קטן","תרוה״ד":"תרומת הדשן","של״ה":"שני לוחות הברית","ת״ק":"תנא קמא","תשב״ץ":"תשב״ץ (שמעון בן צמח)","ראבי״ה":"רבי אליעזר בן יואל הלוי","דרכ״מ":"דרכי משה","ר״י":"רבנו יצחק (מבעלי התוס׳)","רא״מ":"רבנו אליהו מזרחי","מהרש״ל":"מהר״ש לוריא","אג״מ":"אגרות משה","שש״כ":"שמירת שבת כהלכתה","מהריט״ץ":"מהר״י טאיטאצאק","ילקו״י":"ילקוט יוסף","ש״ע":"שולחן ערוך","או״ז":"אור זרוע","או״ח":"אורח חיים","אשיר״י":"הגהות אשיר״י","הגש״ד":"הגהות שערי דורא","ריב״ש":"רבי יצחק בר ששת","רדב״ז":"רבי דוד בן זמרא","רמ״ה":"רבי מאיר הלוי אבולעפיה","רשב״ג":"רבן שמעון בן גמליאל","רש״ש":"רבי שמואל שטראשון","שג״ר":"הרב שג״ר (שמעון גרשון רוזנברג)","שעה״צ":"שער הציון","שעה״ת":"שערי תשובה","רי״ו":"רבנו ירוחם","נמוק״י":"נימוקי יוסף","מרהש״ל":"מהר״ש לוריא","נ״ט":"נותן טעם","נטל״פ":"נותן טעם לפגם","ידס״ב":"יד סולדת בו","מצור״ל":"מצטמק ורע לו","מצוי״ל":"מצטמק ויפה לו","מאב״ד":"מאכל בן דרוסאי","משאצ״ל":"מלאכה שאינה צריכה לגופה","כ״צ":"כל צרכו","בא״ב":"בישול אחר בישול","סכו״ם":"סכין, כף ומזלג","פ״ר":"פסיק רישא","נפק״מ":"נפקא מינה","קיי״ל":"קיימא לן","לכו״ע":"לכולי עלמא","ק״ש":"קריאת שמע","ברהמ״ז":"ברכת המזון","מוצ״ש":"מוצאי שבת","ער״ש":"ערב שבת","רה״ר":"רשות הרבים","כה״ג":"כהאי גוונא","הו״א":"הוה אמינא","דנ״ל":"דניחא ליה","מלשצ״ג":"מלאכה שאינה צריכה לגופה","א״ח":"אורחות חיים","או״ה":"איסור והיתר הארוך","רע״י":"הרב עובדיה יוסף","מהרמ״מ":"מהר״ם מרוטנבורג","משנ״ב":"משנה ברורה","טוש״ע":"טור ושולחן ערוך","פת״ש":"פתחי תשובה","מחצה״ש":"מחצית השקל","ש״ד":"שערי דורא","תה״ד":"תרומת הדשן","נימוק״י":"נימוקי יוסף","גרש״ז":"הגאון רבי שלמה זלמן אוירבך","כלי״ר":"כלי ראשון","בינה״ש":"בין השמשות","ביהכ״נ":"בית הכנסת","ביהמ״ד":"בית המדרש","נו״כ":"נושאי כלים","אח״כ":"אחר כך","לאחמ״כ":"לאחר מכן","אעפ״י":"אף על פי","אע״ג":"אף על גב","א״כ":"אם כן","י״ל":"יש לומר","כנ״ל":"כנזכר לעיל","נ״ל":"נראה לי","הנ״ל":"הנזכר לעיל","ע״י":"על ידי","ע״מ":"על מנת","עפ״י":"על פי","ק״ו":"קל וחומר","בד״א":"במה דברים אמורים","בד״כ":"בדרך כלל","בע״ה":"בעזרת השם","הקב״ה":"הקדוש ברוך הוא","חז״ל":"חכמינו זכרונם לברכה","ע״ה":"עליו השלום","שו״ת":"שאלות ותשובות","זא״ז":"זה את זה","א״א":"אי אפשר","ש״ץ":"שליח ציבור","ב״ש":"בית שמאי","ב״ה":"בית הלל","כ״פ":"כן פסק","כו״פ":"כרתי ופלתי","ריב״ן":"רבי יהודה בן נתן"};
 
 let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID={}, SECLIST="", SECORDER=[], CUR=null, TBCOLLAPSED=false;
 /* === כתובת שרת ה-AI (Gemini דרך Vercel). אם האתר על גיטהאב וה-API על Vercel — הכניסו כאן את כתובת ה-Vercel שלכם,
    למשל: var API_BASE = "https://roeh-yore-ai.vercel.app";  אם הכל על Vercel — השאירו ריק. === */
 var API_BASE = "https://roeh-yore-ai.vercel.app";
 function tailHTML(s){return (s&&s.tail)?' <span class="tpart">'+esc(s.tail)+'</span>':'';}
+function mapOp(p){return {L:p.layer,gid:p.id,gref:p.ref,gtitle:p.title,gnum:p.numbered!==false,gletters:!!p.letters,dseg:p.segs,ddiv:p.divider,dabv:p.above,dblw:p.below,dnote:p.note,gitems:p.items,fviews:p.views,ftl:p.timeline,src:p.src,srcUrl:_full(p.srcRef),txt:(p.txt!=null?p.txt:(Array.isArray(p.paras)?p.paras.map(function(q){return q.t||'';}).join('\n'):'')),paras:(Array.isArray(p.paras)?p.paras:null),under:!!p.under,collapsed:!!p.collapsed,expandable:!!p.expandable,subhead:p.subhead,subsubhead:p.subsubhead,ref:p.ref?{label:p.ref.label,url:_full(p.ref.ref)}:null,table:p.table||null,gcols:p.cols||0,labelBar:!!p.labelBar,tag:p.tag||'',xtitle:p.xtitle||p.title||'',xlabel:p.xlabel||'',ans:p.ans||'',anslbl:p.anslbl||'',kids:(Array.isArray(p.ops)?p.ops.map(mapOp):null)};}
 function deriveTopic(D){
   CUR=D; GLOSS=D.glossary||{};
   SECTIONS={};
@@ -1059,9 +1084,10 @@ function deriveTopic(D){
     if(x.flow)o.flow=x.flow;
     o.navAccent=!!x.navAccent;
     if(x.summary)o.summary=x.summary;
-    o.ops=(x.ops||[]).map(p=>({L:p.layer,gid:p.id,gref:p.ref,gtitle:p.title,gnum:p.numbered!==false,gletters:!!p.letters,dseg:p.segs,ddiv:p.divider,dabv:p.above,dblw:p.below,dnote:p.note,gitems:p.items,fviews:p.views,ftl:p.timeline,src:p.src,srcUrl:_full(p.srcRef),txt:(p.txt!=null?p.txt:(Array.isArray(p.paras)?p.paras.map(function(q){return q.t||'';}).join('\n'):'')),paras:(Array.isArray(p.paras)?p.paras:null),under:!!p.under,collapsed:!!p.collapsed,expandable:!!p.expandable,subhead:p.subhead,subsubhead:p.subsubhead,ref:p.ref?{label:p.ref.label,url:_full(p.ref.ref)}:null,table:p.table||null}));
+    o.ops=(x.ops||[]).map(mapOp);
     o.ops.forEach(function(q){if(q.L==='flowchain'&&!q.txt&&Array.isArray(q.gitems))q.txt=q.gitems.map(function(z){return (z&&typeof z==='object')?(z.t||''):String(z||'');}).join(' \u2190 ');});
     if(x.pesak)o.pesak=x.pesak;
+    if(x.pesakLabel)o.pesakLabel=x.pesakLabel;
     SECTIONS[_id]=o;
   }
   INTRO={lead:{t:D.topic.intro.lead.t,url:_full(D.topic.intro.lead.ref)},body:D.topic.intro.body,paras:(Array.isArray(D.topic.intro.paras)?D.topic.intro.paras:null)};
@@ -1096,7 +1122,7 @@ const ABBR_RE=new RegExp('(?<![א-ת])([והבכלמשד]{0,2})('+Object.keys(AB
 // wrap known abbreviations in an (invisible) hover-tooltip span; input is already HTML-escaped. auto-resolves one/two-letter prefixes (ו/ה/ב/כ/ל/מ/ש/ד)
 function abbrify(s){return s.replace(ABBR_RE,(m,pre,core)=>{const k=core.replace(/&quot;/g,'״').replace(/"/g,'״');return ABBR[k]?'<span class="abbr" data-full="'+ABBR[k]+'">'+m+'</span>':m;});}
 // render a box heading: de-emphasise the connector "בשם", then add abbreviation tooltips
-function headName(s){return abbrify(esc(s).replace(/ בשם /g,' <span class="src-conn">בשם</span> '));}
+function headName(s){return abbrify(esc(s).replace(/^(לשיטת|לדעת|כשיטת) /,'<span class="src-conn">$1</span> ').replace(/ בשם /g,' <span class="src-conn">בשם</span> '));}
 function richB(x){return rich(x).replace(/\n+/g,"<br>");}
 function glossify(t){
   for(const term of Object.keys(GLOSS).sort((a,b)=>b.length-a.length)){
@@ -1113,6 +1139,7 @@ function rich(raw){
   raw=raw.replace(/\\ref\{([^}]*)\}\{([^}]*)\}/g,(m,l,u)=>"\x13"+l+"\x14"+u+"\x15"); // inline sefaria link (looks like normal text)
   raw=raw.replace(/\\mark\{([^}]*)\}/g,"\x1e$1\x1f");
   raw=raw.replace(/\\ul\{([^}]*)\}/g,"\x16$1\x17");
+  raw=raw.replace(/\\hl\{([0-9A-Fa-f]{6})\}\{([^}]*)\}/g,function(m,c,t){return "\x05"+c+"\x06"+t+"\x07";});
   raw=raw.replace(/\\col\{([0-9A-Fa-f]{6})\}\{([^}]*)\}/g,function(m,c,t){return "\x18"+c+"\x19"+t+"\x1a";});
   raw=raw.replace(/\\det\{([^}]*)\}\{([^}]*)\}/g,function(m,a,b){return "\x1b"+a+"\x1c"+b+"\x1d";});  // inline collapsible inside a source box // underline (author's underline)
   let t=glossify(boldNames(raw));
@@ -1123,7 +1150,7 @@ function rich(raw){
   t=t.replace(/\x0e([^\x0f]*)\x0f([^\x10]*)\x10/g,(m,l,u)=>'<sup class="fn" data-ref="'+l+'" data-url="'+S+u+'">◆</sup>');
   t=t.replace(/\x11([^\x12]*)\x12/g,(m,note)=>'<sup class="fn" data-note="'+note.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'">✻</sup>');
   t=t.replace(/\x13([^\x14]*)\x14([^\x15]*)\x15/g,(m,l,u)=>'<span class="srclink iref" data-url="'+S+u+'" data-ref="'+l+'">'+l+'</span>');
-  t=t.replace(/\x16/g,'<u>').replace(/\x17/g,'</u>');
+  t=t.replace(/\x16/g,'<u>').replace(/\x17/g,'</u>');t=t.replace(/\x05([0-9A-Fa-f]{6})\x06([^\x07]*)\x07/g,function(m,c,x){return '<span class="hlq" style="--hlc:#'+c+'">'+x+'</span>';});
   t=t.replace(/\x1e/g,'<span class="mkq">').replace(/\x1f/g,'</span>');
   t=t.replace(/\x18([0-9A-Fa-f]{6})\x19([^\x1a]*)\x1a/g,function(m,c,x){return '<span style="color:#'+c+'">'+x+'</span>';});
   t=t.replace(/\x1b([^\x1c]*)\x1c([^\x1d]*)\x1d/g,function(m,a,b){return '<details class="inl"><summary>'+a+'<span class="inl-hint">(לחץ להצגה)</span></summary><span class="inl-body">'+b+'</span></details>';});
@@ -1188,9 +1215,11 @@ function srcDedup(o){
   return overlap ? t.slice(m[0].length) : t;
 }
 function opHTML(o){
+  if(o.L==='expand') return '<details class="op op-xp"><summary>'+headName(o.xtitle||'')+'<span class="xp-hint">'+esc(o.xlabel||'\u05dc\u05d4\u05e8\u05d7\u05d1\u05d4')+'</span></summary>'+'<div class="xp-body">'+(o.kids||[]).map(opHTML).join('')+'</div></details>';
+  if(o.L==='tirgul') return '<details class="op op-tir"><summary><span>'+esc(o.xtitle||'\u05e9\u05d0\u05dc\u05d4 \u05dc\u05ea\u05e8\u05d2\u05d5\u05dc')+'</span><span>\u25b8</span></summary>'+'<div class="tg-q">'+richB(o.txt||'')+'</div>'+(o.ans?('<details class="tg-a"><summary>'+esc(o.anslbl||'\u05db\u05d9\u05d5\u05d5\u05e0\u05d9 \u05d4\u05d3\u05d9\u05d5\u05df')+' \u25b8</summary><div class="tg-at">'+richB(o.ans)+'</div></details>'):'')+'</details>';
   if(o.L==='gader')return gaderHTML(o);
   if(o.table) return tableHTML(o.table);
-  if(o.subhead) return '<div class="op-subhead"><span class="ost">'+headName(o.subhead)+'</span>'+
+  if(o.subhead) return '<div class="op-subhead"><span class="ost">'+headName(o.subhead)+'</span>'+(o.tag?'<span class="sh-tag">'+esc(o.tag)+'</span>':'')+
     (o.src?'<span class="op-subhead-src">'+(o.srcUrl?srclink(o.src,o.srcUrl):headName(o.src))+refHTML(o.ref)+'</span>':refHTML(o.ref))+'</div>';
   if(o.subsubhead) return '<div class="op-subsubhead"><span class="sst">'+headName(o.subsubhead)+'</span>'+
     (o.src?'<span class="op-subsubhead-src">'+(o.srcUrl?srclink(o.src,o.srcUrl):headName(o.src))+refHTML(o.ref)+'</span>':refHTML(o.ref))+'</div>';
@@ -1246,7 +1275,7 @@ function sectionHTML(id){
   if(s.summary) h+='<div class="summary-card"><div class="sum-lbl">◆ תקציר</div><div class="sum-txt">'+richB(s.summary)+'</div></div>';
   if(s.sugya) h+='<div class="sugya"><span class="pin">◆ סוגיה</span> '+srclink(s.sugya.label,s.sugya.url)+'</div>';
   h+=s.ops.map(opHTML).join('');
-  if(s.pesak) h+='<div class="pesak"><div class="plbl"><span class="dia">◆</span> הלכה למעשה</div><div class="txt">'+rich(s.pesak)+'</div></div>';
+  if(s.pesak) h+='<div class="pesak"><div class="plbl"><span class="dia">◆</span> '+esc(s.pesakLabel||'הלכה למעשה')+'</div><div class="txt">'+rich(s.pesak)+'</div></div>';
   return h;
 }
 
@@ -1386,7 +1415,7 @@ document.addEventListener('click',e=>{
 // ---------- ask the summary ----------
 // SECLIST is derived per topic in deriveTopic
 var ASK_SCOPE='topic';
-function _askStrip(x){return String(x||'').replace(/\*\*/g,'').replace(/~~/g,'')
+function _askStrip(x){return String(x||'').replace(/\\hl\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1').replace(/\\mark\{([^}]*)\}/g,'$1').replace(/\*\*/g,'').replace(/~~/g,'')
   .replace(/\\ul\{([^}]*)\}/g,'$1').replace(/\\col\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1')
   .replace(/\\note\{([^}]*)\}/g,'$1').replace(/\\cite\{([^}]*)\}\{[^}]*\}/g,'$1')
   .replace(/\\ref\{([^}]*)\}\{[^}]*\}/g,'$1');}
@@ -1494,23 +1523,23 @@ function fullText(){
 var DUALN=0;
 function dualViews(o){var v=(Array.isArray(o.fviews)&&o.fviews.length)?o.fviews.slice():['bullets','panels'];return v;}
 function dualCur(vs){var v=null;try{v=sessionStorage.getItem('rf-dualview');}catch(e){}return (v&&vs.indexOf(v)>=0)?v:vs[0];}
-function dualBullets(items){var h='';for(var i=0;i<items.length;i++){var it=items[i];
-  h+='<p class="dl-b"><span class="dl-d">\u2022</span> '+rich((it.head||'')+(it.txt||''))+'</p>';
+function dualBullets(items,pm){var _s=function(x){return pm?String(x||'').replace(/\\hl\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1'):x;};var h='';for(var i=0;i<items.length;i++){var it=items[i];
+  h+='<p class="dl-b"><span class="dl-d">\u2022</span> '+rich(_s((it.head||'')+(it.txt||'')))+'</p>';
   var sb=it.sub||[];if(sb.length){h+='<div class="dl-sub">';
-    for(var j=0;j<sb.length;j++)h+='<p class="dl-b"><span class="dl-d">\u25E6</span> '+rich((sb[j].src?sb[j].src+': ':'')+(sb[j].txt||''))+'</p>';
+    for(var j=0;j<sb.length;j++)h+='<p class="dl-b"><span class="dl-d">\u25E6</span> '+rich(_s((sb[j].src?sb[j].src+': ':'')+(sb[j].txt||'')))+'</p>';
     h+='</div>';}}return h;}
-function dualPanels(items){var h='';for(var i=0;i<items.length;i++){var it=items[i];
-  h+='<div class="dl-p '+(i===0?'a':'b')+'"><div class="dl-ph">'+rich(it.head||'')+'</div><div class="dl-pb">'+rich(it.txt||'')+'</div>';
+function dualPanels(items,cols){var h=(cols>1?'<div class="dl-grid">':'');for(var i=0;i<items.length;i++){var it=items[i];
+  h+='<div class="dl-p '+(it.tone?('t-'+it.tone):(i===0?'a':'b'))+'"><div class="dl-ph">'+rich(it.head||'')+'</div><div class="dl-pb">'+rich(it.txt||'')+'</div>';
   var sb=it.sub||[];for(var j=0;j<sb.length;j++)h+='<div class="dl-o"><span class="dl-os">'+esc(sb[j].src||'')+'</span>'+rich(sb[j].txt||'')+'</div>';
-  h+='</div>';}return h;}
+  h+='</div>';}return h+(cols>1?'</div>':'');}
 function dualHTML(o){var items=o.gitems||[],vs=dualViews(o),cur=dualCur(vs),id='dual'+(++DUALN);
   var h='<div class="op-dual" id="'+id+'" data-views="'+esc(vs.join(','))+'">';
   h+='<button class="fc-wand dual-wand" type="button" aria-label="החלפת התצוגה">'
    +'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'
    +'<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/></svg></button>';
   h+='<span class="dual-hint">להחלפת התצוגה</span>';
-  h+='<div class="dual-v" data-v="bullets"'+(cur==='bullets'?'':' hidden')+'>'+dualBullets(items)+'</div>';
-  h+='<div class="dual-v" data-v="panels"'+(cur==='panels'?'':' hidden')+'>'+dualPanels(items)+'</div>';
+  h+='<div class="dual-v" data-v="bullets"'+(cur==='bullets'?'':' hidden')+'>'+dualBullets(items)+'</div>';if(dualViews(o).indexOf('plain')>=0)h+='<div class="dual-v" data-v="plain"'+(cur==='plain'?'':' hidden')+'>'+dualBullets(items,true)+'</div>';
+  h+='<div class="dual-v" data-v="panels"'+(cur==='panels'?'':' hidden')+'>'+dualPanels(items,o.gcols||0)+'</div>';
   return h+'</div>';}
 function dualToggle(id){var el=document.getElementById(id);if(!el)return;
   var vs=(el.getAttribute('data-views')||'').split(','),cur=null;
@@ -1827,7 +1856,7 @@ function _chelek(D){var s=D.subject||'';if(CHELEK[s])return CHELEK[s];var r=Stri
 function _simanOnly(D){var eb=(D.topic.eyebrow||'').split('·').map(function(x){return x.trim();});
   var last=eb.length?eb[eb.length-1]:'';var m=last.match(/סימ(?:ן|נים)\s+(.+)$/);
   return m?m[1].trim():'';}
-function _plain(s){return String(s||'').replace(/\*\*/g,'').replace(/~~/g,'')
+function _plain(s){return String(s||'').replace(/\\hl\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1').replace(/\\mark\{([^}]*)\}/g,'$1').replace(/\*\*/g,'').replace(/~~/g,'')
   .replace(/\\ul\{([^}]*)\}/g,'$1').replace(/\\col\{[0-9A-Fa-f]{6}\}\{([^}]*)\}/g,'$1')
   .replace(/\\note\{([^}]*)\}/g,'$1').replace(/\\cite\{([^}]*)\}\{[^}]*\}/g,'$1')
   .replace(/\\ref\{([^}]*)\}\{[^}]*\}/g,'$1').replace(/\s+/g,' ').trim();}
@@ -1999,7 +2028,7 @@ function gaderHTML(o){
   var items = o.gitems || [];
   var numbered = o.gnum !== false;
   var scope = o.gid || o.gtitle || 'g';
-  var h = '<div class="gader">';
+  var h = '<div class="gader'+(o.labelBar?' lbar':'')+'">';
   if(o.gtitle) h += '<span class="gader-tag">\u25C6 ' + esc(o.gtitle) + '</span>';
   if(o.gref && o.gref.label){
     var ru = (typeof _full === 'function' && o.gref.ref) ? _full(o.gref.ref) : null;
