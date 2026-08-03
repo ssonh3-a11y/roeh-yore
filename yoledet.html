@@ -109,6 +109,7 @@ details.intro-strip[open]>summary::before{transform:rotate(90deg)}
 .intro-full .intro-body{padding:20px 24px;background:var(--introbg);
   border:1px solid var(--line);border-radius:13px;box-shadow:0 1px 0 var(--shadow1)}
 .intro-body .ib-p{margin:0 0 13px;text-align:justify}
+@media(min-width:560px){.op .txt,.pp{text-align:justify}}
 .intro-body .ib-p:last-child{margin-bottom:0}
 .ib-sep{display:flex;align-items:center;gap:14px}
 .ib-sep-l{flex:1;height:1px;background:var(--rule)}
@@ -1190,7 +1191,7 @@ let SECTIONS={}, INTRO={lead:{t:'',url:null},body:''}, NAV=[], GLOSS={}, SEIF2ID
    למשל: var API_BASE = "https://roeh-yore-ai.vercel.app";  אם הכל על Vercel — השאירו ריק. === */
 var API_BASE = "https://roeh-yore-ai.vercel.app";
 function tailHTML(s){return (s&&s.tail)?' <span class="tpart">'+esc(s.tail)+'</span>':'';}
-function mapOp(p){return {L:p.layer,gid:p.id,gref:p.ref,gtitle:p.title,gnum:p.numbered!==false,gletters:!!p.letters,dseg:p.segs,ddiv:p.divider,dabv:p.above,dblw:p.below,dnote:p.note,gitems:p.items,fviews:p.views,ftl:p.timeline,src:p.src,srcUrl:_full(p.srcRef),txt:(p.txt!=null?p.txt:(Array.isArray(p.paras)?p.paras.map(function(q){return q.t||'';}).join('\n'):'')),paras:(Array.isArray(p.paras)?p.paras:null),under:!!p.under,collapsed:!!p.collapsed,expandable:!!p.expandable,subhead:p.subhead,subsubhead:p.subsubhead,ref:p.ref?{label:p.ref.label,url:_full(p.ref.ref)}:null,table:p.table||null,gcols:p.cols||0,labelBar:!!p.labelBar,tag:p.tag||'',xtitle:p.xtitle||p.title||'',xlabel:p.xlabel||p.label||'',ans:p.ans||'',anslbl:p.anslbl||'',kids:(Array.isArray(p.ops)?p.ops.map(mapOp):null)};}
+function mapOp(p){return {L:p.layer,gid:p.id,gref:p.ref,gtitle:p.title,gnum:p.numbered!==false,gletters:!!p.letters,dseg:p.segs,ddiv:p.divider,dabv:p.above,dblw:p.below,dnote:p.note,gitems:p.items,fviews:p.views,ftl:p.timeline,src:p.src,srcUrl:_full(p.srcRef),txt:(p.txt!=null?p.txt:(Array.isArray(p.paras)?p.paras.map(function(q){return q.t||'';}).join('\n'):'')),paras:(Array.isArray(p.paras)?p.paras:null),under:!!p.under,collapsed:!!p.collapsed,expandable:!!p.expandable,subhead:p.subhead,subsubhead:p.subsubhead,ref:p.ref?{label:p.ref.label,url:_full(p.ref.ref)}:null,table:p.table||null,gcols:p.cols||0,labelBar:!!p.labelBar,tag:p.tag||'',xtitle:p.xtitle||p.title||'',xlabel:p.xlabel||p.label||'',ans:p.ans||'',anslbl:p.anslbl||'',glyph:p.glyph||'',gap:(typeof p.gap==='number'?p.gap:null),kids:(Array.isArray(p.ops)?p.ops.map(mapOp):null)};}
 function deriveTopic(D){
   CUR=D; GLOSS=D.glossary||{};
   SECTIONS={};
@@ -1333,6 +1334,8 @@ function srcDedup(o){
   return overlap ? t.slice(m[0].length) : t;
 }
 function opHTML(o){
+  if(o.L==='sep'){var _g=(typeof o.gap==='number')?Math.round(o.gap*1.333*10)/10:14;
+    return '<div class="ib-sep" style="margin:'+_g+'px 0">'+'<span class="ib-sep-l"></span><span class="ib-sep-g">'+esc(o.glyph||'\u0489')+'</span><span class="ib-sep-l"></span></div>';}
   if(o.L==='kitzur') return '<div class="op-kz"><div class="kz-l">'+esc(o.xlabel||'\u05d1\u05e7\u05d9\u05e6\u05d5\u05e8')+'</div><div class="kz-t">'+richB(o.txt||'')+'</div></div>';
   if(o.L==='expand') return '<details class="op op-xp"><summary>'+headName(o.xtitle||'')+'<span class="xp-hint">'+esc(o.xlabel||'\u05dc\u05d4\u05e8\u05d7\u05d1\u05d4')+'</span></summary>'+'<div class="xp-body">'+(o.kids||[]).map(opHTML).join('')+'</div></details>';
   if(o.L==='tirgul') return '<details class="op op-tir"><summary><span>'+esc(o.xtitle||'\u05e9\u05d0\u05dc\u05d4 \u05dc\u05ea\u05e8\u05d2\u05d5\u05dc')+'</span><span>\u25b8</span></summary>'+'<div class="tg-q">'+richB(o.txt||'')+'</div>'+(o.ans?('<details class="tg-a"><summary>'+esc(o.anslbl||'\u05db\u05d9\u05d5\u05d5\u05e0\u05d9 \u05d4\u05d3\u05d9\u05d5\u05df')+' \u25b8</summary><div class="tg-at">'+richB(o.ans)+'</div></details>'):'')+'</details>';
@@ -1705,6 +1708,7 @@ function proseBody(o){
     return o.paras.map(function(p,i){
       var g=(typeof p.gap==='number')?p.gap:6;
       var mb=(i===n-1)?0:Math.round(g*1.333*10)/10;
+      if(p.sep) return '<div class="ib-sep" style="margin:0 0 '+mb+'px">'+'<span class="ib-sep-l"></span><span class="ib-sep-g">'+esc(p.sep===true?'\u0489':String(p.sep))+'</span><span class="ib-sep-l"></span></div>';
       return '<p class="pp" style="margin:0 0 '+mb+'px">'+rich(p.t||'')+'</p>';
     }).join('');
   }
